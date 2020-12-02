@@ -1,0 +1,458 @@
+Library: community.livecode.rabit.universalbutton
+
+Type: widget
+
+Summary: Button and toggle widget.
+
+Description:
+This widget can be used as a toggle or as a simple button. It has a default
+state and a "highlighted" state. It can display an SVG icon or text only or
+both. Every corner can be rounded separately.
+
+author: Ralf Bitter
+
+version: 1.0.0
+
+Name: borderColor
+
+Type: property
+
+Syntax: get the borderColor of <widget>
+
+Syntax: set the borderColor of <widget> to <color>
+
+Summary: Determines the color of the button border.
+
+Example: set the borderColor of widget "Universal Button" to "211,211,211"
+
+Description: Use the <borderColor> property to control the color of the button border.
+
+Name: backColor
+
+Type: property
+
+Syntax: get the backColor of <widget>
+
+Syntax: set the backColor of <widget> to <pColor>
+
+Summary: Determines the color of the button when not highlighted.
+
+Example: set the backColor of widget "Universal Button" to "211,211,211"
+
+Description:
+Use the <backColor> property to control the color of the button when not
+hilited.
+
+Name: hiliteColor
+
+Type: property
+
+Syntax: get the hiliteColor of <widget>
+
+Syntax: set the hiliteColor of <widget> to <color>
+
+Summary: Determines the color of the button when hilited.
+
+Example: set the hiliteColor of widget "Universal Button" to "211,211,211"
+
+Description:
+Use the <hiliteColor> property to control the color of the button
+when hilited.
+
+Name: foreColor
+
+Type: property
+
+Syntax: get the foreColor of <widget>
+
+Syntax: set the foreColor of <widget> to <color>
+
+Summary: Determines the color of the button label when not hilited.
+
+Example: set the foreColor of widget "Universal Button" to "211,211,211"
+
+Description:
+Use the <foreColor> property to control the color of the button label
+(icon and text) when not hilited.
+
+Name: labelIcon
+
+Type: property
+
+Syntax: set the labelIcon of <widget> to <pIconName>
+get the labelIcon of <widget>
+
+Summary: A predefined SVG icon path name.
+
+Parameters: 
+
+pIconName: The name of the icon to display.
+
+Example: set the labelIcon of widget "Universal Button" to "thumbs up"
+
+Description:
+Use the <labelIcon> property to set the icon of the widget to one of the
+predefined graphics provided by the "IconSVG" library.
+
+You can get a list of available predefined path names by running
+`put iconNames()` in the Message Box.
+
+
+
+Name: labelIconPath
+
+Type: property
+
+Syntax: set the labelIconPath of <widget> to <pPath>
+get the labelIconPath of <widget>
+
+Summary: Determines the SVG path of the button icon.
+
+Parameters: 
+
+pPath: The SVG path of the icon.
+
+Example: set the labelIconPath of widget "My Icon Button" to "M 254.54492 764.48438 L 254.54492 822.05859 L 342.42383 822.05859 L 342.42383 764.48438 L 254.54492 764.48438 z"
+
+Description: Use the `labelIconPath` property to set the SVG path of the widget icon.
+
+
+
+
+Name: buttonText
+
+Type: property
+
+Syntax: set the buttonText of <widget> to <pText>
+get the buttonText of <widget>
+
+Summary: Determines the label text of the button.
+
+Parameters: 
+
+pText: The label text.
+
+Example: set the buttonText of widget "Universal Button" to "Button Label"
+
+Description:
+Use the `buttonText` property to change or get the button label text. This
+string can contain line feed characters. The widget wraps text automatically if
+the lines of the label text do not fit.
+
+
+
+Name: btnCornerRadius
+
+Type: property
+
+Syntax: set the btnCornerRadius of <widget> to <pNum>
+get the btnCornerRadius of <widget>
+
+Summary: Determines the corner radius of the button.
+
+Parameters: 
+
+pNum: The radius.
+
+Example: set the btnCornerRadius of widget "Universal Button" to 10
+
+Description:
+Use the `btnCornerRadius` property to change or get the radius
+of the rounded corners if rounding of the particular corner(s) is enabled.
+
+
+
+Name: isToggle
+
+Type: property
+
+Syntax: set the isToggle of <widget> to {true|false}
+get the isToggle of <widget>
+
+Summary: Determines if the button acts as a toggle.
+
+Example: set the isToggle of widget "My Toggle" to true
+
+Description: Use the `isToggle` property to switch between a simple button and a toggle.
+
+
+
+
+Name: highlightedLabelIconPath
+
+Type: property
+
+Syntax: set the highlightedLabelIconPath of <widget> to <pPath>
+get the highlightedLabelIconPath of <widget>
+
+Summary: Determines the SVG path of the button icon.
+
+Parameters: 
+
+pPath: The SVG path of the icon.
+
+Example: set the highlightedLabelIconPath of widget "My Icon Button" to "M 254.54492 764.48438 L 254.54492 822.05859 L 342.42383 822.05859 L 342.42383 764.48438 L 254.54492 764.48438 z"
+
+Description:
+Use the `highlightedLabelIconPath` property to set the SVG path of the widget
+icon in highlighted mode.
+
+
+
+Name: roundTR
+
+Type: property
+
+Syntax: set the roundTR of <widget> to {true|false}
+get the roundTR of <widget>
+
+Summary: Enables/disables corner rounding.
+
+Example: set the roundTR of widget "Universal Button" to false
+
+Description: Use the `roundTR` property to toggle the rounding of the top right corner.
+
+
+
+
+Name: roundBL
+
+Type: property
+
+Syntax: set the roundBL of <widget> to {true|false}
+get the roundBL of <widget>
+
+Summary: Enables/disables corner rounding.
+
+Example: set the roundBL of widget "Universal Button" to false
+
+Description: Use the `roundBL` property to toggle the rounding of the bottom left corner.
+
+
+
+
+Name: opaque
+
+Type: property
+
+Syntax: set the opaque of <widget> to {true | false}
+get the opaque of <widget>
+
+Summary: Whether the background of the unhighlighted widget is filled.
+
+Example: set the opaque of widget "Universal Button" to false
+
+Description:
+If the <opaque> property is `true`, the unhighlighted background of the button
+is filled with the <buttonColor> or <highlightedButtonColor> respectively.
+If it is `false` the background is transparent.
+
+
+
+Name: executeWidgetMouseHandlers
+
+Type: property
+
+Syntax: set the executeWidgetMouseHandlers of <widget> to {true | false}
+get the executeWidgetMouseHandlers of <widget>
+
+Summary: Whether the widget's mouse handlers are executed.
+
+Example: set the executeWidgetMouseHandlers of widget "Universal Button" to false
+
+Description:
+If the <executeWidgetMouseHandlers> property is `false`, widget mouse handlers
+are not executed.
+
+
+
+Name: highlightedButtonLabelColor
+
+Type: property
+
+Syntax: set the highlightedButtonLabelColor of <widget> to <pColor>
+get the highlightedButtonLabelColor of <widget>
+
+Summary: Determines the color of the button label when highlighted.
+
+Example: set the highlightedButtonLabelColor of widget "Universal Button" to "211,211,211"
+
+Description:
+Use the <highlightedButtonLabelColor> property to control the color of the
+button label (icon and text) when highlighted.
+
+
+
+Name: roundTL
+
+Type: property
+
+Syntax: set the roundTL of <widget> to {true|false}
+get the roundTL of <widget>
+
+Summary: Enables/disables corner rounding.
+
+Example: set the roundTL of widget "Universal Button" to false
+
+Description: Use the `roundTL` property to toggle the rounding of the top left corner.
+
+
+
+
+Name: roundBR
+
+Type: property
+
+Syntax: set the roundBR of <widget> to {true|false}
+get the roundBR of <widget>
+
+Summary: Enables/disables corner rounding.
+
+Example: set the roundBR of widget "Universal Button" to false
+
+Description: Use the `roundBR` property to toggle the rounding of the bottom right corner.
+
+
+
+
+Name: isHighlighted
+
+Type: property
+
+Syntax: set the isHighlighted of <widget> to {true|false}
+get the isHighlighted of <widget>
+
+Summary: `true` if the button is highlighted; `false` otherwise.
+
+Example: set the isHighlighted of widget "Universal Button" to true
+
+Description:
+Use the `isHighlighted` property to test or control whether the button is
+displayed as highlighted or not.
+
+
+
+Name: buttonToggleText
+
+Type: property
+
+Syntax: set the buttonToggleText of <widget> to <pText>
+get the buttonToggleText of <widget>
+
+Summary: Determines the label text of the button in highlighted mode.
+
+Parameters: 
+
+pText: The label text.
+
+Example: set the buttonToggleText of widget "Universal Button" to "Button Highlighted Label"
+
+Description:
+Use the `buttonToggleText` property to change or get the button label text.
+This string can contain line feed characters. The widget wraps text
+automatically if the lines of the label text do not fit.
+
+
+
+Name: btnBorderWidth
+
+Type: property
+
+Syntax: set the btnBorderWidth of <widget> to <pNum>
+get the btnBorderWidth of <widget>
+
+Summary: Determines the border width of the button.
+
+Parameters: 
+
+pNum: The width.
+
+Example: set the btnBorderWidth of widget "Universal Button" to 2
+
+Description:
+Use the `btnBorderWidth` property to change or get the width
+of the button border.
+
+
+
+Name: highlightedLabelIcon
+
+Type: property
+
+Syntax: set the highlightedLabelIcon of <widget> to <pIconName>
+get the highlightedLabelIcon of <widget>
+
+Summary: A predefined SVG icon path name.
+
+Parameters: 
+
+pIconName: The name of the icon to display.
+
+Example:
+set the highlightedLabelIcon of widget "Universal Button" to
+"thumbs up"
+
+Description:
+Use the <highlightedLabelIcon> property to set the icon of the widget to one
+of the predefined graphics provided by the "IconSVG" library.
+
+You can get a list of available predefined path names by running
+`put iconNames()` in the Message Box.
+
+
+
+Name: labelStyle
+
+Type: property
+
+Syntax: set the labelStyle of <widget> to <pStyle>
+get the labelStyle of <widget>
+
+Summary: Determines the label style of the button.
+
+Parameters: 
+
+pStyle: The style as string.
+
+Example: set the labelStyle of widget "Universal Button" to "icon and text"
+
+Description:
+Use the `labelStyle` property to switch between label styles `text`, `icon` and
+`icon and text`.
+
+
+
+Name: showBtnBorder
+
+Type: property
+
+Syntax: set the showBtnBorder of <widget> to {true|false}
+get the showBtnBorder of <widget>
+
+Summary: Shows/hides a border.
+
+Example: set the showBtnBorder of widget "Universal Button" to true
+
+Description: Use the `showBtnBorder` property to toggle the button border.
+
+
+
+
+Name: highlightedOpaque
+
+Type: property
+
+Syntax: set the opaque of <widget> to {true | false}
+get the opaque of <widget>
+
+Summary: Whether the background of the unhighlighted widget is filled.
+
+Example: set the opaque of widget "Universal Button" to false
+
+Description:
+If the <opaque> property is `true`, the unhighlighted background of the button
+is filled with the <buttonColor> or <highlightedButtonColor> respectively.
+If it is `false` the background is transparent.
+
+
+
