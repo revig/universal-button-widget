@@ -1,0 +1,31 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = false
+
+
+# Matches multiple files with brace expansion notation
+# 2 space indentation
+[*.{lc,livecodescript,lcb,html,css,js,py}]
+indent_style = space
+indent_size = 2
+
+
+[*.{html,css,js,py}]
+insert_final_newline = true
+
+
+# Tab indentation (no size specified)
+#[*.{lc,livecodescript,lcb}]
+#indent_style = tab
+
+
+[*.md]
+trim_trailing_whitespace = false
