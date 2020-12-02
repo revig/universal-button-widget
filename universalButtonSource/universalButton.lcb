@@ -1,0 +1,1227 @@
+/**
+Summary: Button and toggle widget.
+
+Description:
+This widget can be used as a toggle or as a simple button. It has a default
+state and a "highlighted" state. It can display an SVG icon or text only or
+both. Every corner can be rounded separately.
+
+Name: borderColor
+Type: property
+
+Syntax: set the borderColor of <widget> to <color>
+Syntax: get the borderColor of <widget>
+
+Summary: Determines the color of the button border.
+
+Example: set the borderColor of widget "Universal Button" to "211,211,211"
+
+Description:
+Use the <borderColor> property to control the color of the button border.
+
+Name: backColor
+Type: property
+
+Syntax: set the backColor of <widget> to <pColor>
+Syntax: get the backColor of <widget>
+
+Summary: Determines the color of the button when not highlighted.
+
+Example: set the backColor of widget "Universal Button" to "211,211,211"
+
+Description:
+Use the <backColor> property to control the color of the button when not
+hilited.
+
+Name: hiliteColor
+Type: property
+
+Syntax: set the hiliteColor of <widget> to <color>
+Syntax: get the hiliteColor of <widget>
+
+Summary: Determines the color of the button when hilited.
+
+Example: set the hiliteColor of widget "Universal Button" to "211,211,211"
+
+Description:
+Use the <hiliteColor> property to control the color of the button
+when hilited.
+
+Name: foreColor
+Type: property
+
+Syntax: set the foreColor of <widget> to <color>
+Syntax: get the foreColor of <widget>
+
+Summary: Determines the color of the button label when not hilited.
+
+Example: set the foreColor of widget "Universal Button" to "211,211,211"
+
+Description:
+Use the <foreColor> property to control the color of the button label
+(icon and text) when not hilited.
+*/
+widget community.livecode.rabit.universalbutton
+--
+
+-- DEPENDENCY DECLARATIONS
+use com.livecode.canvas
+use com.livecode.widget
+use com.livecode.engine
+use com.livecode.library.iconSVG
+use com.livecode.library.widgetutils
+use com.livecode.math
+use com.livecode.char
+
+
+
+-- METADATA
+metadata title is "Universal Button"
+metadata author is "Ralf Bitter"
+metadata version is "1.0.0"
+metadata svgicon is "M 209.72266 351.86719 C 179.16544 351.86719 154.56641 376.46622 154.56641 407.02344 L 154.56641 495.66992 C 154.56641 526.22714 179.16544 550.82813 209.72266 550.82812 L 498.36914 550.82812 C 528.92636 550.82812 553.52539 526.22714 553.52539 495.66992 L 553.52539 407.02344 C 553.52539 376.46622 528.92636 351.86719 498.36914 351.86719 L 209.72266 351.86719 z M 353.23242 380.30664 L 376.95898 426.59766 L 428.54297 433.29492 L 391.84961 470.16406 L 401.41992 521.29297 L 355.01562 497.78906 L 309.34766 522.69141 L 317.36133 471.29492 L 279.56445 435.55664 L 330.92188 427.29688 L 353.23242 380.30664 z"
+metadata preferredSize is "128,36"
+
+
+-- PROPERTY DECLARATIONS
+metadata borderColor.editor		is "com.livecode.pi.color"
+metadata borderColor.default is "80,80,80"
+metadata borderColor.section is "Colors"
+metadata borderColor.label is "Border color"
+
+
+metadata backgroundColor.editor		is "com.livecode.pi.color"
+metadata backgroundColor.default is "255,255,255"
+metadata backgroundColor.section is "Colors"
+metadata backgroundColor.label is "Button color"
+
+
+metadata hiliteColor.editor		is "com.livecode.pi.color"
+metadata hiliteColor.default is "110,110,110"
+metadata hiliteColor.section is "Colors"
+metadata hiliteColor.label is "Hilited button color"
+
+
+metadata foregroundColor.editor		is "com.livecode.pi.color"
+metadata foregroundColor.default is "110,110,110"
+metadata foregroundColor.section is "Colors"
+metadata foregroundColor.label is "Icon/Label color"
+
+
+/**
+Syntax:
+set the isToggle of <widget> to {true|false}
+get the isToggle of <widget>
+
+Summary: Determines if the button acts as a toggle.
+
+Example: set the isToggle of widget "My Toggle" to true
+
+Description:
+Use the `isToggle` property to switch between a simple button and a toggle.
+*/
+property isToggle		get mIsToggle		set setIsToggle
+metadata isToggle.editor is "com.livecode.pi.boolean"
+metadata isToggle.default is "false"
+metadata isToggle.label is "Is Toggle"
+
+/**
+Syntax:
+set the isHighlighted of <widget> to {true|false}
+get the isHighlighted of <widget>
+
+Summary: `true` if the button is highlighted; `false` otherwise.
+
+Example: set the isHighlighted of widget "Universal Button" to true
+
+Description:
+Use the `isHighlighted` property to test or control whether the button is
+displayed as highlighted or not.
+*/
+property isHighlighted		get mIsHighlighted		set setIsHighlighted
+metadata isHighlighted.editor is "com.livecode.pi.boolean"
+metadata isHighlighted.default is "false"
+metadata isHighlighted.label is "Highlighted"
+
+/**
+Syntax:
+set the labelStyle of <widget> to <pStyle>
+get the labelStyle of <widget>
+
+Summary: Determines the label style of the button.
+
+Parameters:
+pStyle: The style as string.
+
+Example: set the labelStyle of widget "Universal Button" to "icon and text"
+
+Description:
+Use the `labelStyle` property to switch between label styles `text`, `icon` and
+`icon and text`.
+*/
+property labelStyle		get mLabelStyle		set setLabelStyle
+metadata labelStyle.editor is "com.livecode.pi.enum"
+metadata labelStyle.options is "text,icon,icon and text"
+metadata labelStyle.default is "text"
+metadata labelStyle.label is "Label Type"
+
+/**
+Syntax:
+set the labelIcon of <widget> to <pIconName>
+get the labelIcon of <widget>
+
+Summary: A predefined SVG icon path name.
+
+Parameters:
+pIconName: The name of the icon to display.
+
+Example: set the labelIcon of widget "Universal Button" to "thumbs up"
+
+Description:
+Use the <labelIcon> property to set the icon of the widget to one of the
+predefined graphics provided by the "IconSVG" library.
+
+You can get a list of available predefined path names by running
+`put iconNames()` in the Message Box.
+*/
+property labelIcon		get mLabelIcon		set setLabelIcon
+-- metadata labelIcon.editor is "com.livecode.pi.enum"
+-- metadata labelIcon.editor		is "com.livecode.pi.editorlist" ------
+-- metadata labelIcon.options is "execute: get iconNames()"
+-- metadata labelIcon.subeditor		is "com.livecode.pi.svgicon" -----
+metadata labelIcon.editor is "com.livecode.pi.svgicon"
+-- metadata labelIcon.delimiter		is "," ---------
+metadata labelIcon.default is "star"
+metadata labelIcon.label is "Label Icon"
+
+
+/**
+Syntax:
+set the labelIconPath of <widget> to <pPath>
+get the labelIconPath of <widget>
+
+Summary: Determines the SVG path of the button icon.
+
+Parameters:
+pPath: The SVG path of the icon.
+
+Example: set the labelIconPath of widget "My Icon Button" to "M 254.54492 764.48438 L 254.54492 822.05859 L 342.42383 822.05859 L 342.42383 764.48438 L 254.54492 764.48438 z"
+
+Description:
+Use the `labelIconPath` property to set the SVG path of the widget icon.
+*/
+property labelIconPath		get mLabelIconPath		set setLabelIconPath
+metadata labelIconPath.editor is "com.livecode.pi.text"
+metadata labelIconPath.label is "Icon Path"
+
+
+/**
+Syntax:
+set the highlightedLabelIcon of <widget> to <pIconName>
+get the highlightedLabelIcon of <widget>
+
+Summary: A predefined SVG icon path name.
+
+Parameters:
+pIconName: The name of the icon to display.
+
+Example: set the highlightedLabelIcon of widget "Universal Button" to
+"thumbs up"
+
+Description:
+Use the <highlightedLabelIcon> property to set the icon of the widget to one
+of the predefined graphics provided by the "IconSVG" library.
+
+You can get a list of available predefined path names by running
+`put iconNames()` in the Message Box.
+*/
+property highlightedLabelIcon		get mHighlightedLabelIcon		set setHighlightedLabelIcon
+-- metadata highlightedLabelIcon.editor		is "com.livecode.pi.editorlist" -------------
+-- metadata highlightedLabelIcon.subeditor		is "com.livecode.pi.svgicon" ----------
+metadata highlightedLabelIcon.editor is "com.livecode.pi.svgicon"
+-- metadata highlightedLabelIcon.delimiter		is ","
+metadata highlightedLabelIcon.default is "apple"
+metadata highlightedLabelIcon.label is "Highlighted Icon"
+
+
+/**
+Syntax:
+set the highlightedLabelIconPath of <widget> to <pPath>
+get the highlightedLabelIconPath of <widget>
+
+Summary: Determines the SVG path of the button icon.
+
+Parameters:
+pPath: The SVG path of the icon.
+
+Example: set the highlightedLabelIconPath of widget "My Icon Button" to "M 254.54492 764.48438 L 254.54492 822.05859 L 342.42383 822.05859 L 342.42383 764.48438 L 254.54492 764.48438 z"
+
+Description:
+Use the `highlightedLabelIconPath` property to set the SVG path of the widget
+icon in highlighted mode.
+*/
+property highlightedLabelIconPath		get mHighlightedLabelIconPath		set setHighlightedLabelIconPath
+metadata highlightedLabelIconPath.editor is "com.livecode.pi.text"
+metadata highlightedLabelIconPath.label is "Highlighted Icon Path"
+
+
+/**
+Syntax:
+set the buttonText of <widget> to <pText>
+get the buttonText of <widget>
+
+Summary: Determines the label text of the button.
+
+Parameters:
+pText: The label text.
+
+Example: set the buttonText of widget "Universal Button" to "Button Label"
+
+Description:
+Use the `buttonText` property to change or get the button label text. This
+string can contain line feed characters. The widget wraps text automatically if
+the lines of the label text do not fit.
+*/
+property buttonText		get mText		set setText
+-- metadata buttonText.editor	is "com.livecode.pi.string"
+metadata buttonText.editor is "com.livecode.pi.text"
+metadata buttonText.default is "Hello World"
+metadata buttonText.label is "Label"
+
+
+/**
+Syntax:
+set the buttonToggleText of <widget> to <pText>
+get the buttonToggleText of <widget>
+
+Summary: Determines the label text of the button in highlighted mode.
+
+Parameters:
+pText: The label text.
+
+Example: set the buttonToggleText of widget "Universal Button" to "Button Highlighted Label"
+
+Description:
+Use the `buttonToggleText` property to change or get the button label text.
+This string can contain line feed characters. The widget wraps text
+automatically if the lines of the label text do not fit.
+*/
+property buttonToggleText		get mToggleText		set setToggleText
+-- metadata buttonToggleText.editor	is "com.livecode.pi.string"
+metadata buttonToggleText.editor is "com.livecode.pi.text"
+metadata buttonToggleText.default is "Hello World"
+metadata buttonToggleText.label is "Toggle Label"
+
+
+/**
+Syntax:
+set the btnCornerRadius of <widget> to <pNum>
+get the btnCornerRadius of <widget>
+
+Summary: Determines the corner radius of the button.
+
+Parameters:
+pNum: The radius.
+
+Example: set the btnCornerRadius of widget "Universal Button" to 10
+
+Description:
+Use the `btnCornerRadius` property to change or get the radius
+of the rounded corners if rounding of the particular corner(s) is enabled.
+*/
+property btnCornerRadius		get mCornerRadius		set setCornerRadius
+metadata btnCornerRadius.editor is "com.livecode.pi.number"
+metadata btnCornerRadius.default is "10"
+metadata btnCornerRadius.step is "1"
+metadata btnCornerRadius.min is "0"
+metadata btnCornerRadius.label is "Corner Radius"
+
+
+/**
+Syntax:
+set the roundTL of <widget> to {true|false}
+get the roundTL of <widget>
+
+Summary: Enables/disables corner rounding.
+
+Example: set the roundTL of widget "Universal Button" to false
+
+Description:
+Use the `roundTL` property to toggle the rounding of the top left corner.
+*/
+property roundTL		get mRoundTL		set setRoundTL
+metadata roundTL.label is "Round Corner Top Left"
+
+
+/**
+Syntax:
+set the roundTR of <widget> to {true|false}
+get the roundTR of <widget>
+
+Summary: Enables/disables corner rounding.
+
+Example: set the roundTR of widget "Universal Button" to false
+
+Description:
+Use the `roundTR` property to toggle the rounding of the top right corner.
+*/
+property roundTR		get mRoundTR		set setRoundTR
+metadata roundTR.label is "Round Corner Top Right"
+
+
+/**
+Syntax:
+set the roundBR of <widget> to {true|false}
+get the roundBR of <widget>
+
+Summary: Enables/disables corner rounding.
+
+Example: set the roundBR of widget "Universal Button" to false
+
+Description:
+Use the `roundBR` property to toggle the rounding of the bottom right corner.
+*/
+property roundBR		get mRoundBR		set setRoundBR
+metadata roundBR.label is "Round Corner Bottom Right"
+
+
+/**
+Syntax:
+set the roundBL of <widget> to {true|false}
+get the roundBL of <widget>
+
+Summary: Enables/disables corner rounding.
+
+Example: set the roundBL of widget "Universal Button" to false
+
+Description:
+Use the `roundBL` property to toggle the rounding of the bottom left corner.
+*/
+property roundBL		get mRoundBL		set setRoundBL
+metadata roundBL.label is "Round Corner Bottom Left"
+
+
+/**
+Syntax:
+set the showBtnBorder of <widget> to {true|false}
+get the showBtnBorder of <widget>
+
+Summary: Shows/hides a border.
+
+Example: set the showBtnBorder of widget "Universal Button" to true
+
+Description:
+Use the `showBtnBorder` property to toggle the button border.
+*/
+property showBtnBorder		get mShowBtnBorder		set setShowBtnBorder
+metadata showBtnBorder.label is "Show Border"
+
+
+/**
+Syntax:
+set the btnBorderWidth of <widget> to <pNum>
+get the btnBorderWidth of <widget>
+
+Summary: Determines the border width of the button.
+
+Parameters:
+pNum: The width.
+
+Example: set the btnBorderWidth of widget "Universal Button" to 2
+
+Description:
+Use the `btnBorderWidth` property to change or get the width
+of the button border.
+*/
+property btnBorderWidth		get mBorderWidth		set setBorderWidth
+metadata btnBorderWidth.editor is "com.livecode.pi.number"
+metadata btnBorderWidth.default is "1"
+metadata btnBorderWidth.step is "1"
+metadata btnBorderWidth.min is "1"
+metadata btnBorderWidth.label is "Border Width"
+
+
+/**
+Syntax:
+set the highlightedButtonLabelColor of <widget> to <pColor>
+get the highlightedButtonLabelColor of <widget>
+
+Summary: Determines the color of the button label when highlighted.
+
+Example: set the highlightedButtonLabelColor of widget "Universal Button" to "211,211,211"
+
+Description:
+Use the <highlightedButtonLabelColor> property to control the color of the
+button label (icon and text) when highlighted.
+*/
+property highlightedButtonLabelColor		get getHighlightedLabelColor		set setHighlightedLabelColor
+metadata highlightedButtonLabelColor.editor is "com.livecode.pi.color"
+metadata highlightedButtonLabelColor.section is "Colors"
+metadata highlightedButtonLabelColor.label is "Hilited Icon/Label color"
+metadata highlightedButtonLabelColor.default is "255,255,255"
+
+
+/**
+Syntax:
+set the opaque of <widget> to {true | false}
+get the opaque of <widget>
+
+Summary: Whether the background of the unhighlighted widget is filled.
+
+Example: set the opaque of widget "Universal Button" to false
+
+Description:
+If the <opaque> property is `true`, the unhighlighted background of the button
+is filled with the <buttonColor> or <highlightedButtonColor> respectively.
+If it is `false` the background is transparent.
+*/
+property "opaque"		get mShowBackground		set setShowBackground
+metadata opaque.editor is "com.livecode.pi.boolean"
+metadata opaque.default is "true"
+metadata opaque.label is "Opaque Background"
+
+
+/**
+Syntax:
+set the opaque of <widget> to {true | false}
+get the opaque of <widget>
+
+Summary: Whether the background of the unhighlighted widget is filled.
+
+Example: set the opaque of widget "Universal Button" to false
+
+Description:
+If the <opaque> property is `true`, the unhighlighted background of the button
+is filled with the <buttonColor> or <highlightedButtonColor> respectively.
+If it is `false` the background is transparent.
+*/
+property "highlightedOpaque"		get mShowHighlightedBackground		set setShowHighlightedBackground
+metadata highlightedOpaque.editor is "com.livecode.pi.boolean"
+metadata highlightedOpaque.default is "true"
+metadata highlightedOpaque.label is "Opaque Background Highlighted"
+
+
+
+/**
+Syntax:
+set the executeWidgetMouseHandlers of <widget> to {true | false}
+get the executeWidgetMouseHandlers of <widget>
+
+Summary: Whether the widget's mouse handlers are executed.
+
+Example: set the executeWidgetMouseHandlers of widget "Universal Button" to false
+
+Description:
+If the <executeWidgetMouseHandlers> property is `false`, widget mouse handlers
+are not executed.
+*/
+property "executeWidgetMouseHandlers"		get mExecuteWidgetMouseHandlers		set setExecuteWidgetMouseHandlers
+metadata executeWidgetMouseHandlers.editor is "com.livecode.pi.boolean"
+metadata executeWidgetMouseHandlers.default is "true"
+metadata executeWidgetMouseHandlers.label is "Execute Widget Mouse Handlers"
+
+
+
+-- PRIVATE INSTANCE VARIABLES
+-- PROPERTIES
+private variable mIsToggle	as Boolean
+private variable mLabelStyle as String
+private variable mText as String
+private variable mToggleText as String
+private variable mCornerRadius as Integer
+
+private variable mRoundTL as Boolean
+private variable mRoundTR as Boolean
+private variable mRoundBR as Boolean
+private variable mRoundBL as Boolean
+
+private variable mBorderWidth as Integer
+private variable mShowBtnBorder as Boolean
+private variable mLabelIcon as String
+private variable mLabelIconPath as String
+private variable mHighlightedLabelIcon as String
+private variable mHighlightedLabelIconPath as String
+private variable mIsHighlighted as Boolean
+
+
+-- VARIABLES
+private variable mPerimeter as Path
+private variable mShowBackground as Boolean
+private variable mShowHighlightedBackground as Boolean
+private variable mHighlightedLabelColor as optional Color
+private variable mTextHeight as Number
+private variable mExecuteWidgetMouseHandlers as Boolean
+
+
+
+-- CONSTANTS
+constant kBuffer is 10
+constant kLabelStyleText is "text"
+constant kLabelStyleIcon is "icon"
+constant kLabelStyleIconText is "icon and text"
+
+
+
+public handler OnCreate()
+-- SET THE DEFAULT VALUES OF ALL THE PROPERTIES
+	put "Hello World" into mText
+
+	put "Hello World" into mToggleText
+	put 10 into mCornerRadius
+
+	put true into mRoundTL
+	put true into mRoundTR
+	put true into mRoundBR
+	put true into mRoundBL
+
+	put 1 into mBorderWidth
+	put false into mShowBtnBorder
+	put the empty path into mPerimeter
+	put "text" into mLabelStyle
+	put false into mIsToggle
+	put false into mIsHighlighted
+	put true into mShowBackground
+	put true into mShowHighlightedBackground
+	put true into mExecuteWidgetMouseHandlers
+
+	setLabelIcon("star")
+	setHighlightedLabelIcon("apple")
+end handler
+
+
+public handler OnSave(out rProperties as Array)
+	put the empty array into rProperties
+
+	put mText into rProperties["buttonText"]
+	put mToggleText into rProperties["buttonToggleText"]
+	put mCornerRadius into rProperties["btnCornerRadius"]
+
+	put mRoundTL into rProperties["roundTL"]
+	put mRoundTR into rProperties["roundTR"]
+	put mRoundBR into rProperties["roundBR"]
+	put mRoundBL into rProperties["roundBL"]
+
+	put mBorderWidth into rProperties["btnBorderWidth"]
+	put mShowBtnBorder into rProperties["showBtnBorder"]
+	put mLabelStyle into rProperties["labelStyle"]
+	put mLabelIcon into rProperties["labelIcon"]
+	put mLabelIconPath into rProperties["label svg path"]
+	put mHighlightedLabelIcon into rProperties["highlightedLabelIcon"]
+	put mHighlightedLabelIconPath into rProperties["highlightedLabel svg path"]
+	put mIsToggle into rProperties["isToggle"]
+	put mIsHighlighted into rProperties["highlighted"]
+
+	if mHighlightedLabelColor is not nothing then
+		put colorToString(mHighlightedLabelColor, false) into \
+				rProperties["highlightedLabelColor"]
+	end if
+
+	put mShowBackground into rProperties["opaque"]
+	put mShowHighlightedBackground into rProperties["highlightedOpaque"]
+	put mExecuteWidgetMouseHandlers into rProperties["executeWidgetMouseHandlers"]
+end handler
+
+
+public handler OnLoad(in pProperties as Array)
+	put pProperties["buttonText"] into mText
+	put pProperties["buttonToggleText"] into mToggleText
+	put pProperties["btnCornerRadius"] into mCornerRadius
+
+	put pProperties["roundTL"] into mRoundTL
+	put pProperties["roundTR"] into mRoundTR
+	put pProperties["roundBR"] into mRoundBR
+	put pProperties["roundBL"] into mRoundBL
+
+	put pProperties["btnBorderWidth"] into mBorderWidth
+	put pProperties["showBtnBorder"]	into mShowBtnBorder
+	put pProperties["labelStyle"] into mLabelStyle
+	put pProperties["labelIcon"] into mLabelIcon
+	put pProperties["label svg path"] into mLabelIconPath
+	put pProperties["highlightedLabelIcon"] into mHighlightedLabelIcon
+	put pProperties["highlightedLabel svg path"] into mHighlightedLabelIconPath
+	put pProperties["isToggle"] into mIsToggle
+	put pProperties["highlighted"] into mIsHighlighted
+
+	if "highlightedLabelColor" is among the keys of pProperties then
+		setHighlightedLabelColor(pProperties["highlightedLabelColor"])
+	end if
+
+	if "opaque" is among the keys of pProperties then
+		setShowBackground(pProperties["opaque"])
+	else
+		put true into mShowBackground
+	end if
+
+	if "highlightedOpaque" is among the keys of pProperties then
+		setShowHighlightedBackground(pProperties["highlightedOpaque"])
+	else
+		put true into mShowHighlightedBackground
+	end if
+
+	if "executeWidgetMouseHandlers" is among the keys of pProperties then
+		setExecuteWidgetMouseHandlers(pProperties["executeWidgetMouseHandlers"])
+	else
+		put true into mExecuteWidgetMouseHandlers
+	end if
+end handler
+
+
+public handler OnPaint()
+	updatePerimeter()
+
+	drawButton()
+
+	-- DRAW THE PERIMETER OF THE BUTTON
+	if mShowBtnBorder then
+		set the paint of this canvas to my border paint
+		set the stroke width of this canvas to mBorderWidth
+		stroke mPerimeter on this canvas
+	end if
+end handler
+
+
+private handler drawButton() returns nothing
+	if mIsHighlighted then
+		if mShowHighlightedBackground then
+			set the paint of this canvas to my highlight paint
+
+			fill fetchPath("rounded rectangle") on this canvas
+		end if
+	else
+		if mShowBackground then
+			set the paint of this canvas to my background paint
+
+			fill fetchPath("rounded rectangle") on this canvas
+		end if
+	end if
+
+	-- FILL IN THE TEXT
+	if mIsHighlighted then
+		if mhighlightedLabelColor is nothing then
+			set the paint of this canvas to fetchPaint("highlighted label")
+		else
+			set the paint of this canvas to solid paint with mHighlightedLabelColor
+		end if
+	else
+		set the paint of this canvas to my foreground paint
+	end if
+
+	-- LABEL
+	-- set the font of this canvas to font "Helvetica" at size 12
+	set the font of this canvas to my font
+	-- set the size of the font of this canvas to 11 ------------ test
+	if mLabelStyle is kLabelStyleText then
+		if mIsHighlighted then
+			fillTextInRect(mToggleText)
+		else
+			fillTextInRect(mText)
+		end if
+
+	else if mLabelStyle is kLabelStyleIcon then
+		if mIsHighlighted and mIsToggle then
+			fill fetchIconPath(mHighlightedLabelIconPath) on this canvas
+		else
+			fill fetchIconPath(mLabelIconPath) on this canvas
+		end if
+
+	else if mLabelStyle is kLabelStyleIconText then
+		if mIsHighlighted then
+			fillTextInRect(mToggleText)
+		else
+			fillTextInRect(mText)
+		end if
+
+		if mIsHighlighted and mIsToggle then
+			fill fetchIconPath(mHighlightedLabelIconPath) on this canvas
+		else
+			fill fetchIconPath(mLabelIconPath) on this canvas
+		end if
+	end if
+end handler
+
+
+
+private handler fillTextInRect(in pWhichText as String)
+	variable tTextWidth as Number
+	variable tTextHeight as Number
+	variable tMaxRows as Number
+	variable tWords as List
+	variable tWord as String
+	variable tText as String
+	variable tTestLine as String
+	variable tRow as Number
+	variable tLinesofText as List
+	variable tRawText as String
+	variable tTextBox as Rectangle
+
+	put pWhichText into tRawText
+	put fetchTextBox() into tTextBox
+
+	replace newline with " xyz " in tRawText -- needs com.livecode.char library
+	split tRawText by " " into tWords
+	put the height of the layout bounds of text tRawText on this canvas into \
+			tTextHeight
+	put the width of tTextBox into tTextWidth
+	put the floor of ((the height of tTextBox)/tTextHeight) into tMaxRows
+
+	if tMaxRows = 0 then
+		return
+	end if
+	put 1 into tRow
+
+	repeat for each element tWord in tWords
+		put tText & tWord into tTestLine
+		if the width of the layout bounds of text tTestLine on this canvas \
+				> tTextWidth or tWord is "xyz" then
+			push tText onto back of tLinesofText
+			put "" into tTestLine
+			if tRow=tMaxRows then
+				put "" into tText
+				exit repeat
+			end if
+			add 1 to tRow
+			if tWord is "xyz" then
+				put "" into tText
+			else
+				put tWord & " " into tText
+			end if
+		else
+			put tTestLine & " " into tText
+		end if
+	end repeat
+	push tText onto back of tLinesofText
+
+	if mLabelStyle is kLabelStyleIconText then
+		add ((the height of tTextBox)-(tMaxRows*tTextHeight) + \
+				(tMaxRows-tRow)*tTextHeight) to the top of tTextBox
+	else
+		add ((the height of tTextBox)-(tMaxRows*tTextHeight) + \
+				(tMaxRows-tRow)*tTextHeight)/2 to the top of tTextBox
+	end if
+
+	put 1 into tRow
+	repeat for each element tText in tLinesofText
+		set the height of tTextBox to tTextHeight
+		fill text tText at center of tTextBox on this canvas
+		add 1 to tRow
+		add tTextHeight to the top of tTextBox
+	end repeat
+
+	put (tRow - 1) * tTextHeight into mTextHeight
+end handler
+
+
+
+
+private handler fetchPaint(in pObject as String) returns Paint
+	-- if pObject is "border" then
+	-- 	return solid paint with color [240/255, 240/255, 240/255]
+	-- else if pObject is "highlighted background" then
+	-- 	return solid paint with color [110/255, 110/255, 110/255]
+	-- else if pObject is "background" then
+	-- 	return solid paint with color [1, 1, 1]
+	-- else if pObject is "label" then
+	-- 	return solid paint with color [110/255, 110/255, 110/255]
+	-- else if pObject is "highlighted label" then
+	-- 	return solid paint with color [1, 1, 1]
+	-- end if
+	if pObject is "highlighted label" then
+		return solid paint with color [1, 1, 1]
+	end if
+
+end handler
+
+
+
+
+private handler fetchPath(in pObject as String) returns Path
+	-- variable tRect as Rectangle
+	variable tPath as Path
+	variable tCornerRadius as Number
+
+	put the empty path into tPath
+	put mCornerRadius into tCornerRadius
+	put min(tCornerRadius, my height / 2) into tCornerRadius
+
+	if pObject is "rounded rectangle" then
+		-- DRAW BUTTON SHAPE
+		-- 	put rectangle [0,0,my width,my height] into tRect
+		--
+		-- 	return rounded rectangle path of tRect with radius tCornerRadius
+		-- -- --  return rounded rectangle path of tRect with radii [10,5]
+
+
+		if mRoundTL then
+			move to point [0, tCornerRadius] on tPath
+			arc through point [0, 0] to point [tCornerRadius, 0] with radius \
+					tCornerRadius on tPath
+		else
+			move to point [0, 0] on tPath
+		end if
+
+		if mRoundTR then
+			arc through point [my width, 0] to point [my width, tCornerRadius] with \
+					radius tCornerRadius on tPath
+		else
+			line to point [my width, 0] on tPath
+		end if
+
+		if mRoundBR then
+			arc through point [my width, my height] to point \
+					[my width - tCornerRadius, my height] with radius tCornerRadius on tPath
+		else
+			line to point [my width, my height] on tPath
+		end if
+
+		if mRoundBL then
+			arc through point [0, my height] to point [0, tCornerRadius] with radius \
+					tCornerRadius on tPath
+		else
+			line to point [0, my height] on tPath
+			line to point [0, tCornerRadius] on tPath
+		end if
+
+		// Close the path with a line back to the starting point
+		close path on tPath
+
+		return tPath
+
+	else if pObject is "perimeter" then
+		-- DRAW BUTTON BORDER
+		-- put rectangle [0.5,0.5,my width -0.5,my height -0.5] into tRect
+		--
+		-- return rounded rectangle path of tRect with radius tCornerRadius
+
+
+		if mRoundTL then
+			move to point [0.5, tCornerRadius -0.5] on tPath
+			arc through point [0.5, 0.5] to point [tCornerRadius -0.5, 0.5] with \
+					radius tCornerRadius - 1.0 on tPath
+		else
+			move to point [0.5, 0.5] on tPath
+		end if
+
+		if mRoundTR then
+			arc through point [my width - 0.5, 0.5] to point \
+					[my width - 0.5, tCornerRadius - 0.5] with radius \
+							tCornerRadius - 1.0 on tPath
+		else
+			line to point [my width - 0.5, 0.5] on tPath
+		end if
+
+		if mRoundBR then
+			arc through point [my width - 0.5, my height - 0.5] to point \
+					[my width - tCornerRadius - 0.5, my height - 0.5] with radius \
+							tCornerRadius - 1.0 on tPath
+		else
+			line to point [my width - 0.5, my height - 0.5] on tPath
+		end if
+
+		if mRoundBL then
+			arc through point [0.5, my height - 0.5] to point \
+					[0.5, tCornerRadius - 0.5] with radius tCornerRadius - 1.0 on tPath
+		else
+			line to point [0.5, my height - 0.5] on tPath
+			line to point [0.5, tCornerRadius - 0.5] on tPath
+		end if
+
+		close path on tPath
+
+		return tPath
+	end if
+end handler
+
+
+
+
+
+private handler fetchTextBox() returns Rectangle
+	variable tRect as Rectangle
+
+	if mLabelStyle is kLabelStyleText then
+		put rectangle [0,0,my width,my height] into tRect
+	else
+		-- LABEL STYLE IS ICON AND TEXT
+		put rectangle [0,0,my width,my height - (my height / 20)] into tRect
+	end if
+
+	return tRect
+end handler
+
+
+
+
+private handler setText(in pText as String)
+	put pText into mText
+	redraw all
+end handler
+
+
+
+private handler setToggleText(in pText as String)
+	put pText into mToggleText
+	redraw all
+end handler
+
+
+
+private handler setCornerRadius(in pNum as Integer)
+	if pNum is not mCornerRadius then
+		put pNum into mCornerRadius
+
+		redraw all
+	end if
+end handler
+
+
+private handler setBorderWidth(in pNum as Integer)
+	if pNum is not mBorderWidth then
+		put pNum into mBorderWidth
+
+		redraw all
+	end if
+end handler
+
+
+private handler setRoundTL(pRoundTL as Boolean)
+	put pRoundTL into mRoundTL
+	-- calculateShape()
+	redraw all
+end handler
+
+
+private handler setRoundTR(pRoundTR as Boolean)
+	put pRoundTR into mRoundTR
+	-- calculateShape()
+	redraw all
+end handler
+
+
+private handler setRoundBR(pRoundBR as Boolean)
+	put pRoundBR into mRoundBR
+	-- calculateShape()
+	redraw all
+end handler
+
+
+private handler setRoundBL(pRoundBL as Boolean)
+	put pRoundBL into mRoundBL
+	-- calculateShape()
+	redraw all
+end handler
+
+
+
+private handler getHighlightedLabelColor() returns String
+	if mHighlightedLabelColor is nothing then
+		return ""
+	end if
+	return colorToString(mHighlightedLabelColor, false)
+end handler
+
+
+private handler setHighlightedLabelColor(in pColor as String)
+	if pColor is "" then
+		put nothing into mHighlightedLabelColor
+	else
+		put stringToColor(pColor) into mHighlightedLabelColor
+	end if
+
+	redraw all
+end handler
+
+
+private handler setShowBtnBorder(in pShow as Boolean)
+	put pShow into mShowBtnBorder
+	redraw all
+end handler
+
+
+private handler updatePerimeter() returns nothing
+	put fetchPath("perimeter") into mPerimeter
+end handler
+
+
+
+private handler setLabelStyle(in pStyle as String)
+	if pStyle is mLabelStyle then
+		return
+	end if
+
+	variable tStyleList as List
+	put [kLabelStyleText, kLabelStyleIcon, kLabelStyleIconText] into tStyleList
+
+	if not(pStyle is in tStyleList) then
+		throw "invalid label style"
+	end if
+
+	put pStyle into mLabelStyle
+
+	redraw all
+end handler
+
+
+private handler fetchIconPath(in pLabelIconPath as String) returns Path
+	variable tIconPath as Path
+	-- put path mLabelIconPath into tIconPath
+	put path pLabelIconPath into tIconPath
+
+	variable tIconRect as Rectangle
+
+	if mLabelStyle is kLabelStyleIcon then
+		put rectangle [0, my height / 4, my width, 3* my height / 4] into tIconRect
+	else
+		-- LABEL STYLE IS ICON AND TEXT
+		put rectangle [0, (my height / 2) / 8, my width, 7 * \
+				(my height - mTextHeight) / 8] into tIconRect
+	end if
+
+	constrainPathToRect(tIconRect, tIconPath)
+
+	return tIconPath
+end handler
+
+
+
+
+private handler setLabelIcon(in pIconName as String) returns nothing
+	put iconSVGPathFromName(pIconName) into mLabelIconPath
+	put pIconName into mLabelIcon
+	redraw all
+end handler
+
+
+public handler setLabelIconPath(in pPath as String) returns nothing
+	put pPath into mLabelIconPath
+	redraw all
+end handler
+
+
+private handler setHighlightedLabelIcon(in pIconName as String) returns nothing
+	put iconSVGPathFromName(pIconName) into mHighlightedLabelIconPath
+	put pIconName into mHighlightedLabelIcon
+	redraw all
+end handler
+
+
+public handler setHighlightedLabelIconPath(in pPath as String) returns nothing
+	put pPath into mHighlightedLabelIconPath
+	redraw all
+end handler
+
+
+private handler setIsToggle(in pToggle as Boolean) returns nothing
+	put pToggle into mIsToggle
+	-- redraw all
+end handler
+
+
+private handler setIsHighlighted(in pHighlighted as Boolean) returns nothing
+	if mIsToggle then
+		put pHighlighted into mIsHighlighted
+		redraw all
+	end if
+end handler
+
+
+private handler setShowBackground(in pShowBackground as Boolean) returns nothing
+	if pShowBackground is mShowBackground then
+		return
+	end if
+
+	put pShowBackground into mShowBackground
+	redraw all
+end handler
+
+
+private handler setShowHighlightedBackground(in pShowHighlightedBackground as Boolean) returns nothing
+	if pShowHighlightedBackground is mShowHighlightedBackground then
+		return
+	end if
+
+	put pShowHighlightedBackground into mShowHighlightedBackground
+	redraw all
+end handler
+
+
+private handler setExecuteWidgetMouseHandlers(in pExecuteWidgetMouseHandlers as Boolean) returns nothing
+	put pExecuteWidgetMouseHandlers into mExecuteWidgetMouseHandlers
+end handler
+
+
+public handler OnMouseDown() returns nothing
+	if mExecuteWidgetMouseHandlers is true then
+		if mIsToggle is false then
+			put true into mIsHighlighted
+			redraw all
+		end if
+	end if
+
+	post "mouseDown" to my script object with [intToString(the click button)]
+end handler
+
+
+
+public handler OnMouseUp() returns nothing
+	if mExecuteWidgetMouseHandlers is true then
+		if mIsToggle then
+			if mIsHighlighted then
+				put false into mIsHighlighted
+			else
+				put true into mIsHighlighted
+			end if
+			redraw all
+
+		else
+			put false into mIsHighlighted
+			redraw all
+		end if
+	end if
+
+	post "mouseUp" to my script object with [intToString(the click button)]
+end handler
+
+
+public handler OnMouseCancel() returns nothing
+	if mExecuteWidgetMouseHandlers is true then
+		if mIsToggle then
+			if mIsHighlighted then
+				put false into mIsHighlighted
+			else
+				put true into mIsHighlighted
+			end if
+			redraw all
+
+		else
+			put false into mIsHighlighted
+			redraw all
+		end if
+	end if
+
+	post "mouseCancel" to my script object
+end handler
+
+
+
+public handler onMouseEnter() returns nothing
+	-- if mIsToggle is false then
+	-- 	put true into mIsHighlighted
+	-- 	redraw all
+	-- end if
+
+	post "mouseEnter" to my script object
+end handler
+
+
+public handler onMouseLeave() returns nothing
+	-- if mIsToggle is false then
+	-- 	put false into mIsHighlighted
+	-- 	redraw all
+	-- end if
+
+	post "mouseLeave" to my script object
+end handler
+
+
+
+end widget
