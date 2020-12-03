@@ -67,12 +67,23 @@ on mouseUp
    if the clickingTogglesHighlight of me is empty then
       set the clickingTogglesHighlight of me to FALSE
    end if
+   if the multipleHighlights of me is empty then
+      set the multipleHighlights of me to FALSE
+   end if
+   
+   if (the clickingTogglesHighlight of me is FALSE) and (the multipleHighlights of me is TRUE) then
+      set the multipleHighlights of me to FALSE
+   end if
    
    put the long ID of the target into tTargetID
    repeat with i = 1 to tNumWidgets
       if the isToggle of widget i of me is TRUE then
          if the long ID of widget i of me <> tTargetID then
-            set the isHighlighted of widget i of me to false
+            if (the multipleHighlights of me is FALSE) and (the clickingTogglesHighlight of me is TRUE) then
+               set the isHighlighted of widget i of me to false
+            else if (the multipleHighlights of me is FALSE) and (the clickingTogglesHighlight of me is FALSE) then
+               set the isHighlighted of widget i of me to false
+            end if
          else
             if the clickingTogglesHighlight of me is false then
                set the isHighlighted of tTargetID to TRUE
