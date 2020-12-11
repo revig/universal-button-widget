@@ -37,7 +37,7 @@ For the license terms see the LICENSE file.
 
 ### Meta
 
-Version: 1.0.2  
+Version: 1.0.3  
 Web Site: <https://revigniter.com/>
 
 Author:  Ralf Bitter
