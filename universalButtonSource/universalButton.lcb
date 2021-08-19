@@ -938,7 +938,7 @@ if pObject is "rounded rectangle" then
 
 	end if
 	--
-	-- // Close the path with a line back to the starting point
+	-- Close the path with a line back to the starting point
 	close path on tPath
 
 	return tPath
@@ -946,7 +946,7 @@ if pObject is "rounded rectangle" then
 else if pObject is "perimeter" then
 	-- DRAW BUTTON BORDER
 	-- put rectangle [0.5,0.5,my width -0.5,my height -0.5] into tRect
-	--
+
 	-- return rounded rectangle path of tRect with radius tCornerRadius
 
 
