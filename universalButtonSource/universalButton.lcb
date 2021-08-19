@@ -1004,13 +1004,17 @@ end handler
 private handler fetchTextBox() returns Rectangle
 	variable tRect as Rectangle
 
+	-- THE FOLLOWING SEEMS KIND OF WEIRD AND PROBABLY NEEDS TO BE REVISED.
 	if mLabelStyle is kLabelStyleText then
-		put rectangle [0,0,my width,my height] into tRect
+		put rectangle [(my width / 8) + (mBorderWidth / 2), 0, (7 * my width / 8) \
+			- (mBorderWidth / 2), my height] into tRect
 	else
 		-- LABEL STYLE IS ICON AND TEXT
-		put rectangle [0,0,my width,my height - (my height / 20)] into tRect
+		put rectangle [(my width / 8) + (mBorderWidth / 2), 0, (7 * my width / 8) \
+			- (mBorderWidth / 2), my height - (my height / 20) - (mBorderWidth / 1.2)] \
+			into tRect
 	end if
-
+	--
 	return tRect
 end handler
 
@@ -1134,14 +1138,18 @@ private handler fetchIconPath(in pLabelIconPath as String) returns Path
 
 	variable tIconRect as Rectangle
 
+	-- THE FOLLOWING SEEMS KIND OF WEIRD AND PROBABLY NEEDS TO BE REVISED.
 	if mLabelStyle is kLabelStyleIcon then
-		put rectangle [0, my height / 4, my width, 3* my height / 4] into tIconRect
+		put rectangle [(my width / 8) + (mBorderWidth / 2), (my height / 7) + \
+			(mBorderWidth / 2), (7 * my width / 8) - (mBorderWidth / 2), (3 * \
+			(my height / 3.5)) - (mBorderWidth / 2)] into tIconRect
 	else
 		-- LABEL STYLE IS ICON AND TEXT
-		put rectangle [0, (my height / 2) / 8, my width, 7 * \
-				(my height - mTextHeight) / 8] into tIconRect
+		put rectangle [(my width / 8) + (mBorderWidth / 2), ((my height + \
+			(14 * mBorderWidth)) / 2) / 8, (7 * my width / 8) - (mBorderWidth / 2), \
+			(7 * (my height - mTextHeight) / 8) - (mBorderWidth / 1.2)] into tIconRect
 	end if
-
+	--
 	constrainPathToRect(tIconRect, tIconPath)
 
 	return tIconPath
