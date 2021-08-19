@@ -78,7 +78,7 @@ use com.livecode.char
 -- METADATA
 metadata title is "Universal Button"
 metadata author is "Ralf Bitter"
-metadata version is "1.0.0"
+metadata version is "1.0.5"
 metadata svgicon is "M 209.72266 351.86719 C 179.16544 351.86719 154.56641 376.46622 154.56641 407.02344 L 154.56641 495.66992 C 154.56641 526.22714 179.16544 550.82813 209.72266 550.82812 L 498.36914 550.82812 C 528.92636 550.82812 553.52539 526.22714 553.52539 495.66992 L 553.52539 407.02344 C 553.52539 376.46622 528.92636 351.86719 498.36914 351.86719 L 209.72266 351.86719 z M 353.23242 380.30664 L 376.95898 426.59766 L 428.54297 433.29492 L 391.84961 470.16406 L 401.41992 521.29297 L 355.01562 497.78906 L 309.34766 522.69141 L 317.36133 471.29492 L 279.56445 435.55664 L 330.92188 427.29688 L 353.23242 380.30664 z"
 metadata preferredSize is "128,36"
 
@@ -833,102 +833,168 @@ end handler
 
 
 
-
+-- ROUNDED CORNER ISSUE FIXED BY BERND NIGGEMANN
 private handler fetchPath(in pObject as String) returns Path
-	-- variable tRect as Rectangle
-	variable tPath as Path
-	variable tCornerRadius as Number
+variable tPath as Path
+variable tCornerRadius as Number
 
-	put the empty path into tPath
-	put mCornerRadius into tCornerRadius
-	put min(tCornerRadius, my height / 2) into tCornerRadius
+variable tHalfBorder as Number
 
-	if pObject is "rounded rectangle" then
-		-- DRAW BUTTON SHAPE
-		-- 	put rectangle [0,0,my width,my height] into tRect
-		--
-		-- 	return rounded rectangle path of tRect with radius tCornerRadius
-		-- -- --  return rounded rectangle path of tRect with radii [10,5]
+variable tTop as Number
+variable tLeft as Number
+variable tBottom as Number
+variable tRight as Number
 
+variable tVertMiddle as Number
+variable tHorzMiddle as Number
 
+put the empty path into tPath
+
+put mCornerRadius into tCornerRadius
+put min(tCornerRadius, my height / 2) into tCornerRadius
+put min(tCornerRadius, my width / 2) into tCornerRadius
+
+put mBorderWidth/2 into tHalfBorder
+
+put 0 + tHalfBorder into tTop
+put 0 + tHalfBorder into tLeft
+put my height - tHalfBorder into tBottom
+put my width - tHalfBorder into tRight
+
+put tBottom / 2 into tVertMiddle
+put tRight / 2 into tHorzMiddle
+
+if pObject is "rounded rectangle" then
+	-- DRAW BUTTON SHAPE
+	--    put rectangle [0,0,my width,my height] into tRect
+	--
+	--    return rounded rectangle path of tRect with radius tCornerRadius
+	-- -- --  return rounded rectangle path of tRect with radii [10,5]
+
+	if not mShowBtnBorder then
 		if mRoundTL then
 			move to point [0, tCornerRadius] on tPath
 			arc through point [0, 0] to point [tCornerRadius, 0] with radius \
-					tCornerRadius on tPath
+			tCornerRadius on tPath
 		else
 			move to point [0, 0] on tPath
 		end if
 
 		if mRoundTR then
 			arc through point [my width, 0] to point [my width, tCornerRadius] with \
-					radius tCornerRadius on tPath
+			radius tCornerRadius on tPath
 		else
 			line to point [my width, 0] on tPath
 		end if
 
 		if mRoundBR then
 			arc through point [my width, my height] to point \
-					[my width - tCornerRadius, my height] with radius tCornerRadius on tPath
+			[my width - tCornerRadius, my height] with radius tCornerRadius on tPath
 		else
 			line to point [my width, my height] on tPath
 		end if
 
 		if mRoundBL then
 			arc through point [0, my height] to point [0, tCornerRadius] with radius \
-					tCornerRadius on tPath
+			tCornerRadius on tPath
 		else
 			line to point [0, my height] on tPath
 			line to point [0, tCornerRadius] on tPath
 		end if
 
-		// Close the path with a line back to the starting point
-		close path on tPath
-
-		return tPath
-
-	else if pObject is "perimeter" then
-		-- DRAW BUTTON BORDER
-		-- put rectangle [0.5,0.5,my width -0.5,my height -0.5] into tRect
-		--
-		-- return rounded rectangle path of tRect with radius tCornerRadius
-
+	else -- mShowBtnBorder is true
 
 		if mRoundTL then
-			move to point [0.5, tCornerRadius -0.5] on tPath
-			arc through point [0.5, 0.5] to point [tCornerRadius -0.5, 0.5] with \
-					radius tCornerRadius - 1.0 on tPath
+			move to point [tLeft, tVertMiddle] on tPath
+			arc through point [tLeft, tTop] to point [tHorzMiddle, tTop] with \
+			radius tCornerRadius on tPath
 		else
-			move to point [0.5, 0.5] on tPath
+			move to point [tLeft, tTop] on tPath
 		end if
 
 		if mRoundTR then
-			arc through point [my width - 0.5, 0.5] to point \
-					[my width - 0.5, tCornerRadius - 0.5] with radius \
-							tCornerRadius - 1.0 on tPath
+			arc through point [tRight, tTop] to point \
+			[tRight, tVertMiddle] with radius \
+			tCornerRadius on tPath
 		else
-			line to point [my width - 0.5, 0.5] on tPath
+			line to point [tRight, tTop] on tPath
 		end if
 
 		if mRoundBR then
-			arc through point [my width - 0.5, my height - 0.5] to point \
-					[my width - tCornerRadius - 0.5, my height - 0.5] with radius \
-							tCornerRadius - 1.0 on tPath
+			arc through point [tRight, tBottom] to point \
+			[tHorzMiddle, tBottom] with radius \
+			tCornerRadius  on tPath
 		else
-			line to point [my width - 0.5, my height - 0.5] on tPath
+			line to point [tRight, tBottom] on tPath
 		end if
 
 		if mRoundBL then
-			arc through point [0.5, my height - 0.5] to point \
-					[0.5, tCornerRadius - 0.5] with radius tCornerRadius - 1.0 on tPath
+			arc through point [tLeft, tBottom] to point \
+			[tLeft, tVertMiddle] with radius tCornerRadius on tPath
 		else
-			line to point [0.5, my height - 0.5] on tPath
-			line to point [0.5, tCornerRadius - 0.5] on tPath
+			line to point [tLeft, tBottom] on tPath
+			line to point [tLeft, tCornerRadius] on tPath
 		end if
 
-		close path on tPath
-
-		return tPath
 	end if
+	--
+	-- // Close the path with a line back to the starting point
+	close path on tPath
+
+	return tPath
+
+else if pObject is "perimeter" then
+	-- DRAW BUTTON BORDER
+	-- put rectangle [0.5,0.5,my width -0.5,my height -0.5] into tRect
+	--
+	-- return rounded rectangle path of tRect with radius tCornerRadius
+
+
+	if mRoundTL then
+		move to point [tLeft, tVertMiddle] on tPath
+		arc through point [tLeft, tTop] to point [tHorzMiddle, tTop] with \
+		radius tCornerRadius on tPath
+	else
+		move to point [tLeft, tVertMiddle] on tPath
+
+		line to point [tLeft, tTop - tHalfBorder] on tPath
+		line to point [tLeft, tTop] on tPath
+		line to point [tHorzMiddle, tTop] on tPath
+	end if
+
+	if mRoundTR then
+		arc through point [tRight, tTop] to point \
+		[tRight, tVertMiddle] with radius \
+		tCornerRadius on tPath
+	else
+		line to point [tRight + tHalfBorder * 2, tTop] on tPath
+		line to point [tRight, tTop] on tPath
+		line to point [tRight, tTop - tHalfBorder] on tPath
+		line to point [tRight, tVertMiddle] on tPath
+	end if
+
+	if mRoundBR then
+		arc through point [tRight, tBottom] to point \
+		[tHorzMiddle, tBottom] with radius \
+		tCornerRadius on tPath
+	else
+		line to point [tRight, tBottom + tHalfBorder] on tPath
+		line to point [tRight, tBottom] on tPath
+	end if
+
+	if mRoundBL then
+		arc through point [tLeft, tBottom] to point \
+		[tLeft, tVertMiddle] with radius tCornerRadius on tPath
+	else
+		line to point [tLeft - tHalfBorder, tBottom] on tPath
+		line to point [tLeft, tBottom] on tPath
+		line to point [tLeft, tVertMiddle] on tPath
+	end if
+
+	close path on tPath
+
+	return tPath
+end if
 end handler
 
 
