@@ -1,4 +1,5 @@
-﻿script "universalControlGrpBehavior"
+script "universalControlGrpBehavior"
+
 
 on mouseUp
    local tGroupID, tTargetID, tNumWidgets
@@ -147,5 +148,37 @@ command ubCreateSegmentedControl pGroupID pTargetID pNumWidgets
       set the left of pGroupID to tGrpLeft
    end if
    
+   # COLOR
+   ubSetControlColors pGroupID, pTargetID, pNumWidgets
+   
    unlock screen
 end ubCreateSegmentedControl
+
+
+
+
+command ubSetControlColors pGroupID pTargetID pNumWidgets
+   local tInk, tBlendLevel, tHiliteColor, tForegroundColor
+   local tBorderColor, tBackgroundColor, tHighlightedButtonLabelColor
+   
+   put the ink of pTargetID into tInk
+   put the blendLevel of pTargetID into tBlendLevel
+   put the hiliteColor of pTargetID into tHiliteColor
+   put the foregroundColor of pTargetID into tForegroundColor
+   put the borderColor of pTargetID into tBorderColor
+   put the backgroundColor of pTargetID into tBackgroundColor
+   put the highlightedButtonLabelColor of pTargetID into tHighlightedButtonLabelColor
+   
+   repeat with i = 1 to pNumWidgets
+      set the ink of widget i of pGroupID to tInk
+      set the blendLevel of widget i of pGroupID to tBlendLevel
+      set the hiliteColor of widget i of pGroupID to tHiliteColor
+      set the foregroundColor of widget i of pGroupID to tForegroundColor
+      set the borderColor of widget i of pGroupID to tBorderColor
+      set the backgroundColor of widget i of pGroupID to tBackgroundColor
+      set the highlightedButtonLabelColor of widget i of pGroupID to tHighlightedButtonLabelColor
+   end repeat
+end ubSetControlColors
+
+
+
