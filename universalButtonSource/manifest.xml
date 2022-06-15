@@ -2,7 +2,7 @@
   <name>community.livecode.rabit.universalbutton</name>
   <title>Universal Button</title>
   <author>Ralf Bitter</author>
-  <version>1.0.6</version>
+  <version>1.1.0</version>
   <license>community</license>
   <type>widget</type>
   <requires name="com.livecode.canvas"/>
@@ -66,6 +66,18 @@
   <property name="highlightedLabelIconPath" get="string" set="string"/>
   <metadata key="highlightedLabelIconPath.editor">com.livecode.pi.text</metadata>
   <metadata key="highlightedLabelIconPath.label">Highlighted Icon Path</metadata>
+  <property name="iconSizeRatio" get="number" set="number"/>
+  <metadata key="iconSizeRatio.editor">com.livecode.pi.number</metadata>
+  <metadata key="iconSizeRatio.step">0.05</metadata>
+  <metadata key="iconSizeRatio.min">0.1</metadata>
+  <metadata key="iconSizeRatio.max">1</metadata>
+  <metadata key="iconSizeRatio.default">1</metadata>
+  <metadata key="iconSizeRatio.label">Icon size ratio</metadata>
+  <property name="btnIconGravity" get="string" set="string"/>
+  <metadata key="btnIconGravity.editor">com.livecode.pi.enum</metadata>
+  <metadata key="btnIconGravity.options">,left,top,right,bottom,topLeft,topRight,bottomLeft,bottomRight</metadata>
+  <metadata key="btnIconGravity.default"></metadata>
+  <metadata key="btnIconGravity.label">Icon Gravity</metadata>
   <property name="buttonText" get="string" set="string"/>
   <metadata key="buttonText.editor">com.livecode.pi.text</metadata>
   <metadata key="buttonText.default">Hello World</metadata>

@@ -19,18 +19,18 @@ Example: set the borderColor of widget "Universal Button" to "211,211,211"
 Description:
 Use the <borderColor> property to control the color of the button border.
 
-Name: backColor
+Name: backgroundColor
 Type: property
 
-Syntax: set the backColor of <widget> to <pColor>
-Syntax: get the backColor of <widget>
+Syntax: set the backgroundColor of <widget> to <pColor>
+Syntax: get the backgroundColor of <widget>
 
 Summary: Determines the color of the button when not highlighted.
 
-Example: set the backColor of widget "Universal Button" to "211,211,211"
+Example: set the backgroundColor of widget "Universal Button" to "211,211,211"
 
 Description:
-Use the <backColor> property to control the color of the button when not
+Use the <backgroundColor> property to control the color of the button when not
 hilited.
 
 Name: hiliteColor
@@ -47,18 +47,18 @@ Description:
 Use the <hiliteColor> property to control the color of the button
 when hilited.
 
-Name: foreColor
+Name: foregroundColor
 Type: property
 
-Syntax: set the foreColor of <widget> to <color>
-Syntax: get the foreColor of <widget>
+Syntax: set the foregroundColor of <widget> to <color>
+Syntax: get the foregroundColor of <widget>
 
 Summary: Determines the color of the button label when not hilited.
 
-Example: set the foreColor of widget "Universal Button" to "211,211,211"
+Example: set the foregroundColor of widget "Universal Button" to "211,211,211"
 
 Description:
-Use the <foreColor> property to control the color of the button label
+Use the <foregroundColor> property to control the color of the button label
 (icon and text) when not hilited.
 */
 widget community.livecode.rabit.universalbutton
@@ -78,7 +78,7 @@ use com.livecode.char
 -- METADATA
 metadata title is "Universal Button"
 metadata author is "Ralf Bitter"
-metadata version is "1.0.6"
+metadata version is "1.1.0"
 metadata svgicon is "M 209.72266 351.86719 C 179.16544 351.86719 154.56641 376.46622 154.56641 407.02344 L 154.56641 495.66992 C 154.56641 526.22714 179.16544 550.82813 209.72266 550.82812 L 498.36914 550.82812 C 528.92636 550.82812 553.52539 526.22714 553.52539 495.66992 L 553.52539 407.02344 C 553.52539 376.46622 528.92636 351.86719 498.36914 351.86719 L 209.72266 351.86719 z M 353.23242 380.30664 L 376.95898 426.59766 L 428.54297 433.29492 L 391.84961 470.16406 L 401.41992 521.29297 L 355.01562 497.78906 L 309.34766 522.69141 L 317.36133 471.29492 L 279.56445 435.55664 L 330.92188 427.29688 L 353.23242 380.30664 z"
 metadata preferredSize is "128,36"
 
@@ -107,6 +107,8 @@ metadata foregroundColor.default is "110,110,110"
 metadata foregroundColor.section is "Colors"
 metadata foregroundColor.label is "Icon/Label color"
 
+
+-- PROPERTIES
 
 /**
 Syntax:
@@ -263,6 +265,48 @@ icon in highlighted mode.
 property highlightedLabelIconPath		get mHighlightedLabelIconPath		set setHighlightedLabelIconPath
 metadata highlightedLabelIconPath.editor is "com.livecode.pi.text"
 metadata highlightedLabelIconPath.label is "Highlighted Icon Path"
+
+
+/**
+Syntax:
+set the iconSizeRatio of <widget> to <pNum>
+get the iconSizeRatio of <widget>
+
+Summary: Manipulates the icon size.
+
+Description:
+Use the <iconSizeRatio> property to change the size of the button icon.
+*/
+property iconSizeRatio		get mIconSizeRatio		set setIconSizeRatio
+metadata iconSizeRatio.editor is "com.livecode.pi.number"
+metadata iconSizeRatio.step is "0.05"
+metadata iconSizeRatio.min is "0.1"
+metadata iconSizeRatio.max is "1"
+metadata iconSizeRatio.default is "1"
+metadata iconSizeRatio.label is "Icon size ratio"
+
+
+/**
+Syntax:
+set the btnIconGravity of <widget> to <pGravity>
+get the btnIconGravity of <widget>
+
+Summary: Specifies wether the button icon is placed independently of the label.
+
+Parameters:
+pGravity: The position of the icon.
+
+Example: set the btnIconGravity of widget "Universal Button" to "topLeft"
+
+Description:
+Use the `btnIconGravity` property to switch between icon positions `left`, `top`,
+`right`, `bottom`, `topLeft`, `topRight`, `bottomLeft` and `bottomRight`.
+*/
+property btnIconGravity		get mIconGravity		set setIconGravity
+metadata btnIconGravity.editor is "com.livecode.pi.enum"
+metadata btnIconGravity.options is ",left,top,right,bottom,topLeft,topRight,bottomLeft,bottomRight"
+metadata btnIconGravity.default is ""
+metadata btnIconGravity.label is "Icon Gravity"
 
 
 /**
@@ -523,7 +567,6 @@ metadata executeWidgetMouseHandlers.label is "Execute Widget Mouse Handlers"
 
 
 -- PRIVATE INSTANCE VARIABLES
--- PROPERTIES
 private variable mIsToggle	as Boolean
 private variable mLabelStyle as String
 private variable mText as String
@@ -543,22 +586,39 @@ private variable mHighlightedLabelIcon as String
 private variable mHighlightedLabelIconPath as String
 private variable mIsHighlighted as Boolean
 
-
--- VARIABLES
 private variable mPerimeter as Path
 private variable mShowBackground as Boolean
 private variable mShowHighlightedBackground as Boolean
 private variable mHighlightedLabelColor as optional Color
 private variable mTextHeight as Number
+
+private variable mTextHeightHighlighted as Number
+
 private variable mExecuteWidgetMouseHandlers as Boolean
+private variable mIconSizeRatio as Number
+private variable mTextIconBottom as Integer
+
+private variable mHighlightedTextIconBottom as Integer
+
+private variable mIconGravity as String
 
 
 
 -- CONSTANTS
-constant kBuffer is 10
+-- constant kBuffer is 10
 constant kLabelStyleText is "text"
 constant kLabelStyleIcon is "icon"
 constant kLabelStyleIconText is "icon and text"
+
+constant kIconGravityLeft is "left"
+constant kIconGravityTop is "top"
+constant kIconGravityRight is "right"
+constant kIconGravityBottom is "bottom"
+constant kIconGravityTopLeft is "topLeft"
+constant kIconGravityTopRight is "topRight"
+constant kIconGravityBottomLeft is "bottomLeft"
+constant kIconGravityBottomRight is "bottomRight"
+constant kIconSpacingRatio is 22
 
 
 
@@ -583,6 +643,7 @@ public handler OnCreate()
 	put true into mShowBackground
 	put true into mShowHighlightedBackground
 	put true into mExecuteWidgetMouseHandlers
+	put 1.0 into mIconSizeRatio
 
 	setLabelIcon("star")
 	setHighlightedLabelIcon("apple")
@@ -619,6 +680,12 @@ public handler OnSave(out rProperties as Array)
 	put mShowBackground into rProperties["opaque"]
 	put mShowHighlightedBackground into rProperties["highlightedOpaque"]
 	put mExecuteWidgetMouseHandlers into rProperties["executeWidgetMouseHandlers"]
+	put mIconSizeRatio into rProperties["icon size ratio"]
+	put mIconGravity into rProperties["icon gravity"]
+	put mTextHeight into rProperties["text height"]
+	put mTextHeightHighlighted into rProperties["text height highlighted"]
+	put mTextIconBottom into rProperties["text icon bottom"]
+	put mHighlightedTextIconBottom into rProperties["highlighted text icon bottom"]
 end handler
 
 
@@ -641,6 +708,12 @@ public handler OnLoad(in pProperties as Array)
 	put pProperties["highlightedLabel svg path"] into mHighlightedLabelIconPath
 	put pProperties["isToggle"] into mIsToggle
 	put pProperties["highlighted"] into mIsHighlighted
+	put pProperties["icon size ratio"] into mIconSizeRatio
+	put pProperties["icon gravity"] into mIconGravity
+	put pProperties["text height"] into mTextHeight
+	put pProperties["text height highlighted"] into mTextHeightHighlighted
+	put pProperties["text icon bottom"] into mTextIconBottom
+	put pProperties["highlighted text icon bottom"] into mHighlightedTextIconBottom
 
 	if "highlightedLabelColor" is among the keys of pProperties then
 		setHighlightedLabelColor(pProperties["highlightedLabelColor"])
@@ -807,7 +880,17 @@ private handler fillTextInRect(in pWhichText as String)
 		add tTextHeight to the top of tTextBox
 	end repeat
 
-	put (tRow - 1) * tTextHeight into mTextHeight
+	put (tRow - 1) * tTextHeight into tTextHeight
+
+	if mIsHighlighted then
+		if tTextHeight is not mTextHeightHighlighted then
+			put tTextHeight into mTextHeightHighlighted
+		end if
+	else
+		if tTextHeight is not mTextHeight then
+			put tTextHeight into mTextHeight
+		end if
+	end if
 end handler
 
 
@@ -1003,16 +1086,46 @@ end handler
 
 private handler fetchTextBox() returns Rectangle
 	variable tRect as Rectangle
+	variable tLeft as Integer
+	put (my width / 8) + (mBorderWidth / 2) into tLeft
 
-	-- THE FOLLOWING SEEMS KIND OF WEIRD AND PROBABLY NEEDS TO BE REVISED.
-	if mLabelStyle is kLabelStyleText then
-		put rectangle [(my width / 8) + (mBorderWidth / 2), 0, (7 * my width / 8) \
-			- (mBorderWidth / 2), my height] into tRect
+	variable tTop as Integer
+	put 0 into tTop
+
+	variable tRight as Integer
+	put (7 * my width / 8) - (mBorderWidth / 2) into tRight
+
+	variable tBottom as Integer
+
+	if (mLabelStyle is kLabelStyleText) or (mIconGravity is not "") then
+		put my height into tBottom
+
+		if (mIconGravity is not "") then
+			if mIsHighlighted then
+				put (tBottom / 2) + (mTextHeightHighlighted / 2) into tBottom
+			else
+				put (tBottom / 2) + (mTextHeight / 2) into tBottom
+			end if
+		end if
+
+		put rectangle [tLeft, tTop, tRight, tBottom] into tRect
 	else
-		-- LABEL STYLE IS ICON AND TEXT
-		put rectangle [(my width / 8) + (mBorderWidth / 2), 0, (7 * my width / 8) \
-			- (mBorderWidth / 2), my height - (my height / 20) - (mBorderWidth / 1.2)] \
-			into tRect
+		-- LABEL STYLE IS ICON AND TEXT, ICON GRAVITY IS OFF
+		put my height - (my height / 20) - (mBorderWidth / 1.2) into tBottom
+
+		if mIsHighlighted then
+			if mHighlightedTextIconBottom is not 0 then
+				put mHighlightedTextIconBottom + mTextHeightHighlighted + \
+				((my height * 0.06) * mIconSizeRatio) into tBottom
+			end if
+		else
+			if mTextIconBottom is not 0 then
+				put mTextIconBottom + mTextHeight + ((my height * 0.06) * \
+				mIconSizeRatio) into tBottom
+			end if
+		end if
+
+		put rectangle [tLeft, tTop, tRight, tBottom] into tRect
 	end if
 	--
 	return tRect
@@ -1133,29 +1246,372 @@ end handler
 
 private handler fetchIconPath(in pLabelIconPath as String) returns Path
 	variable tIconPath as Path
-	-- put path mLabelIconPath into tIconPath
 	put path pLabelIconPath into tIconPath
 
 	variable tIconRect as Rectangle
+	put theIconRect() into tIconRect
 
-	-- THE FOLLOWING SEEMS KIND OF WEIRD AND PROBABLY NEEDS TO BE REVISED.
-	if mLabelStyle is kLabelStyleIcon then
-		put rectangle [(my width / 8) + (mBorderWidth / 2), (my height / 7) + \
-			(mBorderWidth / 2), (7 * my width / 8) - (mBorderWidth / 2), (3 * \
-			(my height / 3.5)) - (mBorderWidth / 2)] into tIconRect
-	else
-		-- LABEL STYLE IS ICON AND TEXT
-		put rectangle [(my width / 8) + (mBorderWidth / 2), ((my height + \
-			(14 * mBorderWidth)) / 2) / 8, (7 * my width / 8) - (mBorderWidth / 2), \
-			(7 * (my height - mTextHeight) / 8) - (mBorderWidth / 1.2)] into tIconRect
-	end if
-	--
 	constrainPathToRect(tIconRect, tIconPath)
 
 	return tIconPath
 end handler
 
 
+private handler theIconRect() returns Rectangle
+	variable tLeft as Integer
+	variable tTop as Integer
+	variable tRight as Integer
+	variable tBottom as Integer
+	variable tIconRect as Rectangle
+
+	put iconLeft() into tLeft
+
+	put iconTop() into tTop
+
+	put iconRight() into tRight
+
+	put iconBottom() into tBottom
+
+	put rectangle [tLeft, tTop, tRight, tBottom] into tIconRect
+
+	if (mLabelStyle is kLabelStyleIconText) and (mIconGravity is "") then
+		if mIsHighlighted then
+			put tBottom into mHighlightedTextIconBottom
+		else
+			put tBottom into mTextIconBottom
+		end if
+	end if
+
+	return tIconRect
+end handler
+
+
+private handler iconLeft() returns Integer
+	variable tLeft as Integer
+	variable tRight as Integer
+	variable tParentHalfWidthDelta as Number
+
+	if mIconGravity is not "" then
+		if (mIconGravity is kIconGravityTopRight) or \
+			(mIconGravity is kIconGravityBottomRight) then
+
+				-- USE A SQUARE
+				if my width > my height then
+					put my width - (my height / 2) into tLeft
+					put (my width - (my height / kIconSpacingRatio)) - \
+					mBorderWidth into tRight
+					put tRight - tLeft into tParentHalfWidthDelta
+				else
+					put my width / 2 into tLeft
+					put (my width - (my width / kIconSpacingRatio)) - \
+					(mBorderWidth / 2) into tRight
+					put tRight - tLeft into tParentHalfWidthDelta
+				end if
+
+			put tLeft + (tParentHalfWidthDelta - \
+			(tParentHalfWidthDelta * mIconSizeRatio)) into tLeft
+		end if
+
+		if (mIconGravity is kIconGravityRight) then
+			put my width / 2 into tLeft
+
+			if my width > my height then
+				put (my width - (my height / kIconSpacingRatio)) - \
+				mBorderWidth into tRight
+			else
+				put (my width - (my width / kIconSpacingRatio)) - \
+				mBorderWidth into tRight
+			end if
+
+			put tRight - tLeft into tParentHalfWidthDelta
+			put tLeft + (tParentHalfWidthDelta - \
+			(tParentHalfWidthDelta * mIconSizeRatio)) into tLeft
+		end if
+
+		if (mIconGravity is kIconGravityLeft) or \
+			(mIconGravity is kIconGravityTopLeft) or \
+			(mIconGravity is kIconGravityBottomLeft) or \
+			(mIconGravity is kIconGravityTop) or \
+			(mIconGravity is kIconGravityBottom) then
+
+			if my width > my height then
+				put (my height / kIconSpacingRatio) + mBorderWidth into tLeft
+			else
+				put (my width / kIconSpacingRatio) + mBorderWidth into tLeft
+			end if
+		end if
+
+	else
+		if my width > my height then
+			put (my height / kIconSpacingRatio) + mBorderWidth into tLeft
+		else
+			put (my width / kIconSpacingRatio) + mBorderWidth into tLeft
+		end if
+
+		if my width > my height then
+			put (my width - (my height / kIconSpacingRatio)) - mBorderWidth into tRight
+		else
+			put (my width - (my width / kIconSpacingRatio)) - mBorderWidth into tRight
+		end if
+
+		put (my width / 2) - tLeft into tParentHalfWidthDelta
+		put tLeft + (tParentHalfWidthDelta - \
+			(tParentHalfWidthDelta * mIconSizeRatio)) into tLeft
+	end if
+
+	return tLeft
+end handler
+
+
+private handler iconTop() returns Integer
+	variable tTop as Integer
+	variable tBottom as Integer
+	variable tParentHalfHeightDelta as Number
+
+	if (mLabelStyle is kLabelStyleIcon) or (mIconGravity is not "") then
+		if my width > my height then
+			put (my height / kIconSpacingRatio) + mBorderWidth into tTop
+		else
+			put (my width / kIconSpacingRatio) + mBorderWidth into tTop
+		end if
+
+		put (my height / 2) - tTop into tParentHalfHeightDelta
+		put tTop + (tParentHalfHeightDelta - \
+		(tParentHalfHeightDelta * mIconSizeRatio)) into tTop
+
+		if (mIconGravity is kIconGravityTop) or (mIconGravity is kIconGravityTopLeft) \
+			or (mIconGravity is kIconGravityTopRight) then
+			if my width > my height then
+				put (my height / kIconSpacingRatio) + mBorderWidth into tTop
+			else
+				put (my width / kIconSpacingRatio) + mBorderWidth into tTop
+			end if
+		end if
+
+		if mIconGravity is kIconGravityBottom then
+			if my width > my height then
+				put (my height - (my height / kIconSpacingRatio)) - \
+				mBorderWidth into tBottom
+			else
+				put (my height - (my width / kIconSpacingRatio)) - \
+				mBorderWidth into tBottom
+			end if
+
+			put my height / 2 into tTop
+			put tBottom - tTop into tParentHalfHeightDelta
+
+			put tTop + (tParentHalfHeightDelta - \
+			(tParentHalfHeightDelta * mIconSizeRatio)) into tTop
+		end if
+
+		if (mIconGravity is kIconGravityBottomLeft) or \
+			(mIconGravity is kIconGravityBottomRight) then
+			-- USE A SQUARE
+			if my height > my width then
+				put (my height - (my width / kIconSpacingRatio)) - \
+				mBorderWidth into tBottom
+				put my height - (my width / 2) into tTop
+				put tBottom - tTop into tParentHalfHeightDelta
+			else
+				put (my height - (my height / kIconSpacingRatio)) - \
+				mBorderWidth into tBottom
+				put my height / 2 into tTop
+				put tBottom - tTop into tParentHalfHeightDelta
+			end if
+
+			put tTop + (tParentHalfHeightDelta - \
+			(tParentHalfHeightDelta * mIconSizeRatio)) into tTop
+		end if
+
+		if (mIconGravity is kIconGravityLeft) or \
+			(mIconGravity is kIconGravityRight) then
+			if my width > my height then
+				put (my height / kIconSpacingRatio) + mBorderWidth into tTop
+			else
+				put (my width / kIconSpacingRatio) + mBorderWidth into tTop
+			end if
+		end if
+	else
+		-- LABEL STYLE IS ICON AND TEXT AND mIconGravity IS EMPTY
+		if my width > my height then
+			put (my height / kIconSpacingRatio) + mBorderWidth into tTop
+		else
+			put (my width / kIconSpacingRatio) + mBorderWidth into tTop
+		end if
+
+		if mIsHighlighted then
+			put ((my height - mTextHeightHighlighted) / 2) - \
+			tTop into tParentHalfHeightDelta
+		else
+			put ((my height - mTextHeight) / 2) - tTop into tParentHalfHeightDelta
+		end if
+
+		put tTop + (tParentHalfHeightDelta - \
+		(tParentHalfHeightDelta * mIconSizeRatio)) into tTop
+	end if
+
+	return tTop
+end handler
+
+
+private handler iconRight() returns Integer
+	variable tLeft as Integer
+	variable tRight as Integer
+	variable tParentHalfWidthDelta as Number
+
+	if mIconGravity is not "" then
+		if (mIconGravity is kIconGravityRight) or \
+			(mIconGravity is kIconGravityTopRight) or \
+			(mIconGravity is kIconGravityBottomRight) or \
+			(mIconGravity is kIconGravityTop) or \
+			(mIconGravity is kIconGravityBottom) then
+
+			if my width > my height then
+				put (my width - (my height / kIconSpacingRatio)) - \
+				mBorderWidth into tRight
+			else
+				put (my width - (my width / kIconSpacingRatio)) - \
+				(mBorderWidth / 2) into tRight
+			end if
+		end if
+
+		if (mIconGravity is kIconGravityTopLeft) or \
+			(mIconGravity is kIconGravityBottomLeft) then
+			-- USE A SQUARE
+			if my width > my height then
+				put (my height / kIconSpacingRatio) + (mBorderWidth / 2) into tLeft
+				put (my height / 2) - tLeft into tParentHalfWidthDelta
+				put my height / 2 into tRight
+			else
+				put (my width / kIconSpacingRatio) + (mBorderWidth / 2) into tLeft
+				put (my width / 2) - tLeft into tParentHalfWidthDelta
+				put my width / 2 into tRight
+			end if
+
+		put tRight - (tParentHalfWidthDelta - \
+		(tParentHalfWidthDelta * mIconSizeRatio)) into tRight
+		end if
+
+		if (mIconGravity is kIconGravityLeft) then
+			put (my width / kIconSpacingRatio) + (mBorderWidth / 2) into tLeft
+			-- USE A SQUARE ?
+			-- if my width > my height then
+			-- 	put (my height / 2) - tLeft into tParentHalfWidthDelta
+			-- 	put my height / 2 into tRight
+			-- else
+				put (my width / 2) - tLeft into tParentHalfWidthDelta
+				put my width / 2 into tRight
+			-- end if
+
+			put tRight - (tParentHalfWidthDelta - \
+			(tParentHalfWidthDelta * mIconSizeRatio)) into tRight
+		end if
+
+	else
+		if my width > my height then
+			put (my height / kIconSpacingRatio) + mBorderWidth into tLeft
+		else
+			put (my width / kIconSpacingRatio) + mBorderWidth into tLeft
+		end if
+
+		if my width > my height then
+			put (my width - (my height / kIconSpacingRatio)) - mBorderWidth into tRight
+		else
+			put (my width - (my width / kIconSpacingRatio)) - mBorderWidth into tRight
+		end if
+
+		put (my width / 2) - tLeft into tParentHalfWidthDelta
+		put tRight - (tParentHalfWidthDelta - \
+		(tParentHalfWidthDelta * mIconSizeRatio)) into tRight
+	end if
+
+	return tRight
+end handler
+
+
+private handler iconBottom() returns Integer
+	-- THE FOLLOWING CALCULATIONS SEEM KIND OF WEIRD
+	-- AND PROBABLY NEED TO BE REVISED.
+	variable tBottom as Integer
+	variable tTop as Integer
+	variable tParentHalfHeightDelta as Number
+
+	if (mLabelStyle is kLabelStyleIcon) or (mIconGravity is not "") then
+		if mIconGravity is not "" then
+			if (mIconGravity is kIconGravityTop) or (mIconGravity is kIconGravityTopLeft) \
+				or (mIconGravity is kIconGravityTopRight) then
+				put (my height / kIconSpacingRatio) + (mBorderWidth / 2) into tTop
+				put my height / 2 into tBottom
+				put (my height / 2) - tTop into tParentHalfHeightDelta
+
+				put tBottom - (tParentHalfHeightDelta - \
+				(tParentHalfHeightDelta * mIconSizeRatio)) into tBottom
+			end if
+
+			if (mIconGravity is kIconGravityBottom) or \
+				(mIconGravity is kIconGravityBottomLeft) or \
+				(mIconGravity is kIconGravityBottomRight) then
+				-- USE A SQUARE
+				if my width > my height then
+					put (my height - (my height / kIconSpacingRatio)) - \
+					mBorderWidth into tBottom
+				else
+					put (my height - (my width / kIconSpacingRatio)) - \
+					mBorderWidth into tBottom
+				end if
+			end if
+
+			if (mIconGravity is kIconGravityLeft) or \
+				(mIconGravity is kIconGravityRight) then
+				if my width > my height then
+					put (my height - (my height / kIconSpacingRatio)) - \
+					mBorderWidth into tBottom
+				else
+					put (my height - (my width / kIconSpacingRatio)) - \
+					mBorderWidth into tBottom
+				end if
+			end if
+
+		else
+			-- LABEL STYLE IS ICON AND mIconGravity IS EMPTY
+			if my width > my height then
+				put (my height - (my height / kIconSpacingRatio)) - \
+				mBorderWidth into tBottom
+			else
+				put (my height - (my width / kIconSpacingRatio)) - \
+				mBorderWidth into tBottom
+			end if
+
+			put tBottom - (my height / 2) into tParentHalfHeightDelta
+			put tBottom - (tParentHalfHeightDelta - \
+			(tParentHalfHeightDelta * mIconSizeRatio)) into tBottom
+		end if
+	else
+		-- LABEL STYLE IS ICON AND TEXT, mIconGravity IS EMPTY
+		if my width > my height then
+			put (my height / kIconSpacingRatio) + mBorderWidth into tTop
+		else
+			put (my width / kIconSpacingRatio) + mBorderWidth into tTop
+		end if
+
+		if mIsHighlighted then
+			put ((my height - mTextHeightHighlighted) / 2) - tTop \
+			into tParentHalfHeightDelta
+
+			put (7 * (my height - mTextHeightHighlighted) / 8) - \
+			(mBorderWidth / 1.2) into tBottom
+		else
+			put ((my height - mTextHeight) / 2) - tTop into tParentHalfHeightDelta
+
+			put (7 * (my height - mTextHeight) / 8) - (mBorderWidth / 1.2) into tBottom
+		end if
+
+		put tBottom - (tParentHalfHeightDelta - \
+		(tParentHalfHeightDelta * mIconSizeRatio)) into tBottom
+	end if
+
+	return tBottom
+end handler
 
 
 private handler setLabelIcon(in pIconName as String) returns nothing
@@ -1220,6 +1676,43 @@ end handler
 
 private handler setExecuteWidgetMouseHandlers(in pExecuteWidgetMouseHandlers as Boolean) returns nothing
 	put pExecuteWidgetMouseHandlers into mExecuteWidgetMouseHandlers
+end handler
+
+
+private handler setIconSizeRatio(in pRatio as Number)
+	if pRatio < 0.1 or pRatio > 1 then
+		throw "invalid ratio"
+	end if
+
+	if pRatio is not mIconSizeRatio then
+		put pRatio into mIconSizeRatio
+		redraw all
+	end if
+end handler
+
+
+private handler setIconGravity(in pGravity as String)
+	if pGravity is mIconGravity then
+		return
+	end if
+
+	variable tGravityList as List
+	put ["", kIconGravityLeft, \
+			kIconGravityTop, \
+			kIconGravityRight, \
+			kIconGravityBottom, \
+			kIconGravityTopLeft, \
+			kIconGravityTopRight, \
+			kIconGravityBottomLeft, \
+			kIconGravityBottomRight] into tGravityList
+
+	if not(pGravity is in tGravityList) then
+		throw "invalid gravity type"
+	end if
+
+	put pGravity into mIconGravity
+
+	redraw all
 end handler
 
 

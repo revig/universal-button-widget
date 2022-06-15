@@ -1,5 +1,5 @@
-script "universalControlGrpBehavior"
-
+﻿script "universalControlGrpBehavior"
+local sWidgetRedrawn
 
 on mouseUp
    local tGroupID, tTargetID, tNumWidgets
@@ -151,7 +151,17 @@ command ubCreateSegmentedControl pGroupID pTargetID pNumWidgets
    # COLOR
    ubSetControlColors pGroupID, pTargetID, pNumWidgets
    
+   # REDRWAW THE WIDGET GROUP
+   if sWidgetRedrawn <> TRUE then
+      click at the loc of widget 1
+      put TRUE into sWidgetRedrawn
+   end if
+   
    unlock screen
+   
+   if the isToggle of pTargetID is TRUE then
+      set the isHighlighted of pTargetID to TRUE
+   end if
 end ubCreateSegmentedControl
 
 
