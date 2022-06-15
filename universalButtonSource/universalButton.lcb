@@ -1486,8 +1486,14 @@ private handler iconRight() returns Integer
 
 		if (mIconGravity is kIconGravityLeft) then
 			put (my width / kIconSpacingRatio) + (mBorderWidth / 2) into tLeft
-			put (my width / 2) - tLeft into tParentHalfWidthDelta
-			put my width / 2 into tRight
+			-- USE A SQUARE ?
+			-- if my width > my height then
+			-- 	put (my height / 2) - tLeft into tParentHalfWidthDelta
+			-- 	put my height / 2 into tRight
+			-- else
+				put (my width / 2) - tLeft into tParentHalfWidthDelta
+				put my width / 2 into tRight
+			-- end if
 
 			put tRight - (tParentHalfWidthDelta - \
 			(tParentHalfWidthDelta * mIconSizeRatio)) into tRight
