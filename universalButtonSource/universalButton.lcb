@@ -19,18 +19,18 @@ Example: set the borderColor of widget "Universal Button" to "211,211,211"
 Description:
 Use the <borderColor> property to control the color of the button border.
 
-Name: backColor
+Name: backgroundColor
 Type: property
 
-Syntax: set the backColor of <widget> to <pColor>
-Syntax: get the backColor of <widget>
+Syntax: set the backgroundColor of <widget> to <pColor>
+Syntax: get the backgroundColor of <widget>
 
 Summary: Determines the color of the button when not highlighted.
 
-Example: set the backColor of widget "Universal Button" to "211,211,211"
+Example: set the backgroundColor of widget "Universal Button" to "211,211,211"
 
 Description:
-Use the <backColor> property to control the color of the button when not
+Use the <backgroundColor> property to control the color of the button when not
 hilited.
 
 Name: hiliteColor
@@ -47,18 +47,18 @@ Description:
 Use the <hiliteColor> property to control the color of the button
 when hilited.
 
-Name: foreColor
+Name: foregroundColor
 Type: property
 
-Syntax: set the foreColor of <widget> to <color>
-Syntax: get the foreColor of <widget>
+Syntax: set the foregroundColor of <widget> to <color>
+Syntax: get the foregroundColor of <widget>
 
 Summary: Determines the color of the button label when not hilited.
 
-Example: set the foreColor of widget "Universal Button" to "211,211,211"
+Example: set the foregroundColor of widget "Universal Button" to "211,211,211"
 
 Description:
-Use the <foreColor> property to control the color of the button label
+Use the <foregroundColor> property to control the color of the button label
 (icon and text) when not hilited.
 */
 widget community.livecode.rabit.universalbutton
