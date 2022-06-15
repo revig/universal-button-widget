@@ -108,6 +108,8 @@ metadata foregroundColor.section is "Colors"
 metadata foregroundColor.label is "Icon/Label color"
 
 
+-- PROPERTIES
+
 /**
 Syntax:
 set the isToggle of <widget> to {true|false}
@@ -263,6 +265,48 @@ icon in highlighted mode.
 property highlightedLabelIconPath		get mHighlightedLabelIconPath		set setHighlightedLabelIconPath
 metadata highlightedLabelIconPath.editor is "com.livecode.pi.text"
 metadata highlightedLabelIconPath.label is "Highlighted Icon Path"
+
+
+/**
+Syntax:
+set the iconSizeRatio of <widget> to <pNum>
+get the iconSizeRatio of <widget>
+
+Summary: Manipulates the icon size.
+
+Description:
+Use the <iconSizeRatio> property to change the size of the button icon.
+*/
+property iconSizeRatio		get mIconSizeRatio		set setIconSizeRatio
+metadata iconSizeRatio.editor is "com.livecode.pi.number"
+metadata iconSizeRatio.step is "0.05"
+metadata iconSizeRatio.min is "0.1"
+metadata iconSizeRatio.max is "1"
+metadata iconSizeRatio.default is "1"
+metadata iconSizeRatio.label is "Icon size ratio"
+
+
+/**
+Syntax:
+set the btnIconGravity of <widget> to <pGravity>
+get the btnIconGravity of <widget>
+
+Summary: Specifies wether the button icon is placed independently of the label.
+
+Parameters:
+pGravity: The position of the icon.
+
+Example: set the btnIconGravity of widget "Universal Button" to "topLeft"
+
+Description:
+Use the `btnIconGravity` property to switch between icon positions `left`, `top`,
+`right`, `bottom`, `topLeft`, `topRight`, `bottomLeft` and `bottomRight`.
+*/
+property btnIconGravity		get mIconGravity		set setIconGravity
+metadata btnIconGravity.editor is "com.livecode.pi.enum"
+metadata btnIconGravity.options is ",left,top,right,bottom,topLeft,topRight,bottomLeft,bottomRight"
+metadata btnIconGravity.default is ""
+metadata btnIconGravity.label is "Icon Gravity"
 
 
 /**
@@ -523,7 +567,6 @@ metadata executeWidgetMouseHandlers.label is "Execute Widget Mouse Handlers"
 
 
 -- PRIVATE INSTANCE VARIABLES
--- PROPERTIES
 private variable mIsToggle	as Boolean
 private variable mLabelStyle as String
 private variable mText as String
@@ -543,22 +586,39 @@ private variable mHighlightedLabelIcon as String
 private variable mHighlightedLabelIconPath as String
 private variable mIsHighlighted as Boolean
 
-
--- VARIABLES
 private variable mPerimeter as Path
 private variable mShowBackground as Boolean
 private variable mShowHighlightedBackground as Boolean
 private variable mHighlightedLabelColor as optional Color
 private variable mTextHeight as Number
+
+private variable mTextHeightHighlighted as Number
+
 private variable mExecuteWidgetMouseHandlers as Boolean
+private variable mIconSizeRatio as Number
+private variable mTextIconBottom as Integer
+
+private variable mHighlightedTextIconBottom as Integer
+
+private variable mIconGravity as String
 
 
 
 -- CONSTANTS
-constant kBuffer is 10
+-- constant kBuffer is 10
 constant kLabelStyleText is "text"
 constant kLabelStyleIcon is "icon"
 constant kLabelStyleIconText is "icon and text"
+
+constant kIconGravityLeft is "left"
+constant kIconGravityTop is "top"
+constant kIconGravityRight is "right"
+constant kIconGravityBottom is "bottom"
+constant kIconGravityTopLeft is "topLeft"
+constant kIconGravityTopRight is "topRight"
+constant kIconGravityBottomLeft is "bottomLeft"
+constant kIconGravityBottomRight is "bottomRight"
+constant kIconSpacingRatio is 22
 
 
 
@@ -1220,6 +1280,43 @@ end handler
 
 private handler setExecuteWidgetMouseHandlers(in pExecuteWidgetMouseHandlers as Boolean) returns nothing
 	put pExecuteWidgetMouseHandlers into mExecuteWidgetMouseHandlers
+end handler
+
+
+private handler setIconSizeRatio(in pRatio as Number)
+	if pRatio < 0.1 or pRatio > 1 then
+		throw "invalid ratio"
+	end if
+
+	if pRatio is not mIconSizeRatio then
+		put pRatio into mIconSizeRatio
+		redraw all
+	end if
+end handler
+
+
+private handler setIconGravity(in pGravity as String)
+	if pGravity is mIconGravity then
+		return
+	end if
+
+	variable tGravityList as List
+	put ["", kIconGravityLeft, \
+			kIconGravityTop, \
+			kIconGravityRight, \
+			kIconGravityBottom, \
+			kIconGravityTopLeft, \
+			kIconGravityTopRight, \
+			kIconGravityBottomLeft, \
+			kIconGravityBottomRight] into tGravityList
+
+	if not(pGravity is in tGravityList) then
+		throw "invalid gravity type"
+	end if
+
+	put pGravity into mIconGravity
+
+	redraw all
 end handler
 
 
