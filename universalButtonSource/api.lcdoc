@@ -11,7 +11,7 @@ both. Every corner can be rounded separately.
 
 author: Ralf Bitter
 
-version: 1.0.6
+version: 1.1.0
 
 Name: borderColor
 
@@ -27,20 +27,20 @@ Example: set the borderColor of widget "Universal Button" to "211,211,211"
 
 Description: Use the <borderColor> property to control the color of the button border.
 
-Name: backColor
+Name: backgroundColor
 
 Type: property
 
-Syntax: get the backColor of <widget>
+Syntax: get the backgroundColor of <widget>
 
-Syntax: set the backColor of <widget> to <pColor>
+Syntax: set the backgroundColor of <widget> to <pColor>
 
 Summary: Determines the color of the button when not highlighted.
 
-Example: set the backColor of widget "Universal Button" to "211,211,211"
+Example: set the backgroundColor of widget "Universal Button" to "211,211,211"
 
 Description:
-Use the <backColor> property to control the color of the button when not
+Use the <backgroundColor> property to control the color of the button when not
 hilited.
 
 Name: hiliteColor
@@ -59,20 +59,20 @@ Description:
 Use the <hiliteColor> property to control the color of the button
 when hilited.
 
-Name: foreColor
+Name: foregroundColor
 
 Type: property
 
-Syntax: get the foreColor of <widget>
+Syntax: get the foregroundColor of <widget>
 
-Syntax: set the foreColor of <widget> to <color>
+Syntax: set the foregroundColor of <widget> to <color>
 
 Summary: Determines the color of the button label when not hilited.
 
-Example: set the foreColor of widget "Universal Button" to "211,211,211"
+Example: set the foregroundColor of widget "Universal Button" to "211,211,211"
 
 Description:
-Use the <foreColor> property to control the color of the button label
+Use the <foregroundColor> property to control the color of the button label
 (icon and text) when not hilited.
 
 Name: labelIcon
@@ -231,6 +231,27 @@ Description: Use the `roundBL` property to toggle the rounding of the bottom lef
 
 
 
+Name: btnIconGravity
+
+Type: property
+
+Syntax: set the btnIconGravity of <widget> to <pGravity>
+get the btnIconGravity of <widget>
+
+Summary: Specifies wether the button icon is placed independently of the label.
+
+Parameters: 
+
+pGravity: The position of the icon.
+
+Example: set the btnIconGravity of widget "Universal Button" to "topLeft"
+
+Description:
+Use the `btnIconGravity` property to switch between icon positions `left`, `top`,
+`right`, `bottom`, `topLeft`, `topRight`, `bottomLeft` and `bottomRight`.
+
+
+
 Name: opaque
 
 Type: property
@@ -329,6 +350,20 @@ Example: set the isHighlighted of widget "Universal Button" to true
 Description:
 Use the `isHighlighted` property to test or control whether the button is
 displayed as highlighted or not.
+
+
+
+Name: iconSizeRatio
+
+Type: property
+
+Syntax: set the iconSizeRatio of <widget> to <pNum>
+get the iconSizeRatio of <widget>
+
+Summary: Manipulates the icon size.
+
+Description: Use the <iconSizeRatio> property to change the size of the button icon.
+
 
 
 
