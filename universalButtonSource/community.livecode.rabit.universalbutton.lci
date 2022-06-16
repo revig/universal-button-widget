@@ -11,10 +11,10 @@ import module community.livecode.rabit.universalbutton
   use com.livecode.string
   use com.livecode.type
   use com.livecode.widget
+  use com.livecode.engine
   use com.livecode.char
   use com.livecode.typeconvert
   use com.livecode.mathfoundation
-  use com.livecode.engine
   handler OnCreate() returns optional any
   handler OnSave(out rProperties as Array) returns optional any
   handler OnLoad(in pProperties as Array) returns optional any

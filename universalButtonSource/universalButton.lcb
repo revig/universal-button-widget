@@ -274,8 +274,14 @@ get the iconSizeRatio of <widget>
 
 Summary: Manipulates the icon size.
 
+Parameters:
+pNum: The ratio as a floating point number.
+
+Example: set the iconSizeRatio of widget "My Icon Button" to 0.5
+
 Description:
 Use the <iconSizeRatio> property to change the size of the button icon.
+Valid ratio values range from 0.1 to 1.
 */
 property iconSizeRatio		get mIconSizeRatio		set setIconSizeRatio
 metadata iconSizeRatio.editor is "com.livecode.pi.number"
@@ -708,12 +714,32 @@ public handler OnLoad(in pProperties as Array)
 	put pProperties["highlightedLabel svg path"] into mHighlightedLabelIconPath
 	put pProperties["isToggle"] into mIsToggle
 	put pProperties["highlighted"] into mIsHighlighted
-	put pProperties["icon size ratio"] into mIconSizeRatio
-	put pProperties["icon gravity"] into mIconGravity
-	put pProperties["text height"] into mTextHeight
-	put pProperties["text height highlighted"] into mTextHeightHighlighted
-	put pProperties["text icon bottom"] into mTextIconBottom
-	put pProperties["highlighted text icon bottom"] into mHighlightedTextIconBottom
+
+	if "icon size ratio" is among the keys of pProperties then
+		put pProperties["icon size ratio"] into mIconSizeRatio
+	else
+		put 1.0 into mIconSizeRatio
+	end if
+
+	if "icon gravity" is among the keys of pProperties then
+		put pProperties["icon gravity"] into mIconGravity
+	end if
+
+  if "text height" is among the keys of pProperties then
+    put pProperties["text height"] into mTextHeight
+  end if
+
+	if "text height highlighted" is among the keys of pProperties then
+		put pProperties["text height highlighted"] into mTextHeightHighlighted
+	end if
+
+	if "text icon bottom" is among the keys of pProperties then
+		put pProperties["text icon bottom"] into mTextIconBottom
+	end if
+
+	if "highlighted text icon bottom" is among the keys of pProperties then
+		put pProperties["highlighted text icon bottom"] into mHighlightedTextIconBottom
+	end if
 
 	if "highlightedLabelColor" is among the keys of pProperties then
 		setHighlightedLabelColor(pProperties["highlightedLabelColor"])

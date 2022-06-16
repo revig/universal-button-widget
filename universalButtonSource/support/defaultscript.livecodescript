@@ -1,1 +1,1 @@
-﻿script "community.livecode.rabit.universalButton.__DefaultScript"
+script "community.livecode.rabit.universalButton.__DefaultScript"
