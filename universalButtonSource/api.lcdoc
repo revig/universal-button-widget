@@ -11,7 +11,7 @@ both. Every corner can be rounded separately.
 
 author: Ralf Bitter
 
-version: 1.1.0
+version: 1.1.1
 
 Name: borderColor
 
@@ -362,8 +362,15 @@ get the iconSizeRatio of <widget>
 
 Summary: Manipulates the icon size.
 
-Description: Use the <iconSizeRatio> property to change the size of the button icon.
+Parameters: 
 
+pNum: The ratio as a floating point number.
+
+Example: set the iconSizeRatio of widget "My Icon Button" to 0.5
+
+Description:
+Use the <iconSizeRatio> property to change the size of the button icon.
+Valid ratio values range from 0.1 to 1.
 
 
 

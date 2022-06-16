@@ -78,7 +78,7 @@ use com.livecode.char
 -- METADATA
 metadata title is "Universal Button"
 metadata author is "Ralf Bitter"
-metadata version is "1.1.0"
+metadata version is "1.1.1"
 metadata svgicon is "M 209.72266 351.86719 C 179.16544 351.86719 154.56641 376.46622 154.56641 407.02344 L 154.56641 495.66992 C 154.56641 526.22714 179.16544 550.82813 209.72266 550.82812 L 498.36914 550.82812 C 528.92636 550.82812 553.52539 526.22714 553.52539 495.66992 L 553.52539 407.02344 C 553.52539 376.46622 528.92636 351.86719 498.36914 351.86719 L 209.72266 351.86719 z M 353.23242 380.30664 L 376.95898 426.59766 L 428.54297 433.29492 L 391.84961 470.16406 L 401.41992 521.29297 L 355.01562 497.78906 L 309.34766 522.69141 L 317.36133 471.29492 L 279.56445 435.55664 L 330.92188 427.29688 L 353.23242 380.30664 z"
 metadata preferredSize is "128,36"
 
@@ -274,8 +274,14 @@ get the iconSizeRatio of <widget>
 
 Summary: Manipulates the icon size.
 
+Parameters:
+pNum: The ratio as a floating point number.
+
+Example: set the iconSizeRatio of widget "My Icon Button" to 0.5
+
 Description:
 Use the <iconSizeRatio> property to change the size of the button icon.
+Valid ratio values range from 0.1 to 1.
 */
 property iconSizeRatio		get mIconSizeRatio		set setIconSizeRatio
 metadata iconSizeRatio.editor is "com.livecode.pi.number"
@@ -708,12 +714,32 @@ public handler OnLoad(in pProperties as Array)
 	put pProperties["highlightedLabel svg path"] into mHighlightedLabelIconPath
 	put pProperties["isToggle"] into mIsToggle
 	put pProperties["highlighted"] into mIsHighlighted
-	put pProperties["icon size ratio"] into mIconSizeRatio
-	put pProperties["icon gravity"] into mIconGravity
-	put pProperties["text height"] into mTextHeight
-	put pProperties["text height highlighted"] into mTextHeightHighlighted
-	put pProperties["text icon bottom"] into mTextIconBottom
-	put pProperties["highlighted text icon bottom"] into mHighlightedTextIconBottom
+
+	if "icon size ratio" is among the keys of pProperties then
+		put pProperties["icon size ratio"] into mIconSizeRatio
+	else
+		put 1.0 into mIconSizeRatio
+	end if
+
+	if "icon gravity" is among the keys of pProperties then
+		put pProperties["icon gravity"] into mIconGravity
+	end if
+
+  if "text height" is among the keys of pProperties then
+    put pProperties["text height"] into mTextHeight
+  end if
+
+	if "text height highlighted" is among the keys of pProperties then
+		put pProperties["text height highlighted"] into mTextHeightHighlighted
+	end if
+
+	if "text icon bottom" is among the keys of pProperties then
+		put pProperties["text icon bottom"] into mTextIconBottom
+	end if
+
+	if "highlighted text icon bottom" is among the keys of pProperties then
+		put pProperties["highlighted text icon bottom"] into mHighlightedTextIconBottom
+	end if
 
 	if "highlightedLabelColor" is among the keys of pProperties then
 		setHighlightedLabelColor(pProperties["highlightedLabelColor"])
