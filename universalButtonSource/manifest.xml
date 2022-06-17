@@ -2,7 +2,7 @@
   <name>community.livecode.rabit.universalbutton</name>
   <title>Universal Button</title>
   <author>Ralf Bitter</author>
-  <version>1.1.1</version>
+  <version>1.2.0</version>
   <license>community</license>
   <type>widget</type>
   <requires name="com.livecode.canvas"/>
@@ -125,12 +125,24 @@
   <metadata key="executeWidgetMouseHandlers.editor">com.livecode.pi.boolean</metadata>
   <metadata key="executeWidgetMouseHandlers.default">true</metadata>
   <metadata key="executeWidgetMouseHandlers.label">Execute Widget Mouse Handlers</metadata>
+  <property name="textAlign" get="string" set="string"/>
+  <metadata key="textAlign.default">center</metadata>
+  <property name="marginRatio" get="number" set="number"/>
+  <metadata key="marginRatio.editor">com.livecode.pi.number</metadata>
+  <metadata key="marginRatio.step">0.05</metadata>
+  <metadata key="marginRatio.min">0.5</metadata>
+  <metadata key="marginRatio.max">1</metadata>
+  <metadata key="marginRatio.default">1</metadata>
+  <metadata key="marginRatio.label">Margin ratio</metadata>
+  <metadata key="marginRatio.section">Text</metadata>
   <handler name="OnCreate" parameters="" return="any"/>
   <handler name="OnSave" parameters="out array" return="any"/>
   <handler name="OnLoad" parameters="in array" return="any"/>
   <handler name="OnPaint" parameters="" return="any"/>
   <handler name="setLabelIconPath" parameters="in string" return="nothing"/>
   <handler name="setHighlightedLabelIconPath" parameters="in string" return="nothing"/>
+  <handler name="SetHorizontalTextAlign" parameters="in string" return="any"/>
+  <handler name="GetHorizontalTextAlign" parameters="" return="string"/>
   <handler name="OnMouseDown" parameters="" return="nothing"/>
   <handler name="OnMouseUp" parameters="" return="nothing"/>
   <handler name="OnMouseCancel" parameters="" return="nothing"/>

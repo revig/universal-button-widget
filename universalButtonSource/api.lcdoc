@@ -11,7 +11,7 @@ both. Every corner can be rounded separately.
 
 author: Ralf Bitter
 
-version: 1.1.1
+version: 1.2.0
 
 Name: borderColor
 
@@ -159,6 +159,55 @@ Example: set the btnCornerRadius of widget "Universal Button" to 10
 Description:
 Use the `btnCornerRadius` property to change or get the radius
 of the rounded corners if rounding of the particular corner(s) is enabled.
+
+
+
+Name: textAlign
+
+Type: property
+
+Syntax: set the textAlign of <widget> to <pAlign>
+get the textAlign of <widget>
+
+Summary: The horizontal text alignment of the button label.
+
+Value:
+"left"
+"center"
+"right"
+
+Example: set the textAlign of widget "Universal Button" to "center"
+
+Description:
+Use the <textAlign> property to change the horizontal text alignment of the
+button label.
+
+
+
+Name: marginRatio
+
+Type: property
+
+Syntax: set the marginRatio of <widget> to <pNum>
+get the marginRatio of <widget>
+
+Summary: Manipulates the horizontal margins of the button label and the icon.
+
+Parameters: 
+
+pNum: The ratio as a floating point number.
+
+Example: set the marginRatio of widget "My Icon Button" to 0.8
+
+Description:
+Use the <marginRatio> property to change the horizontal margins of
+the button label. This horizontal margin is applied to the icon too, but only
+if icon gravity is "left" or "right".
+If label style is "icon" and gravity is "left" or "right" you need to choose
+label style "icon and text" once, adjust the margin ratio, then switch back
+to label style "icon".
+
+Valid ratio values range from 0.5 to 1.
 
 
 

@@ -78,7 +78,7 @@ use com.livecode.char
 -- METADATA
 metadata title is "Universal Button"
 metadata author is "Ralf Bitter"
-metadata version is "1.1.1"
+metadata version is "1.2.0"
 metadata svgicon is "M 209.72266 351.86719 C 179.16544 351.86719 154.56641 376.46622 154.56641 407.02344 L 154.56641 495.66992 C 154.56641 526.22714 179.16544 550.82813 209.72266 550.82812 L 498.36914 550.82812 C 528.92636 550.82812 553.52539 526.22714 553.52539 495.66992 L 553.52539 407.02344 C 553.52539 376.46622 528.92636 351.86719 498.36914 351.86719 L 209.72266 351.86719 z M 353.23242 380.30664 L 376.95898 426.59766 L 428.54297 433.29492 L 391.84961 470.16406 L 401.41992 521.29297 L 355.01562 497.78906 L 309.34766 522.69141 L 317.36133 471.29492 L 279.56445 435.55664 L 330.92188 427.29688 L 353.23242 380.30664 z"
 metadata preferredSize is "128,36"
 
@@ -571,6 +571,60 @@ metadata executeWidgetMouseHandlers.default is "true"
 metadata executeWidgetMouseHandlers.label is "Execute Widget Mouse Handlers"
 
 
+/**
+Syntax:
+set the textAlign of <widget> to <pAlign>
+get the textAlign of <widget>
+
+Summary: The horizontal text alignment of the button label.
+
+Value:
+"left"
+"center"
+"right"
+
+Example:
+set the textAlign of widget "Universal Button" to "center"
+
+Description:
+Use the <textAlign> property to change the horizontal text alignment of the
+button label.
+*/
+property textAlign get GetHorizontalTextAlign set SetHorizontalTextAlign
+metadata textAlign.default is "center"
+
+
+/**
+Syntax:
+set the marginRatio of <widget> to <pNum>
+get the marginRatio of <widget>
+
+Summary: Manipulates the horizontal margins of the button label and the icon.
+
+Parameters:
+pNum: The ratio as a floating point number.
+
+Example: set the marginRatio of widget "My Icon Button" to 0.8
+
+Description:
+Use the <marginRatio> property to change the horizontal margins of
+the button label. This horizontal margin is applied to the icon too, but only
+if icon gravity is "left" or "right".
+If label style is "icon" and gravity is "left" or "right" you need to choose
+label style "icon and text" once, adjust the margin ratio, then switch back
+to label style "icon".
+
+Valid ratio values range from 0.5 to 1.
+*/
+property marginRatio		get mMarginRatio		set setMarginRatio
+metadata marginRatio.editor is "com.livecode.pi.number"
+metadata marginRatio.step is "0.05"
+metadata marginRatio.min is "0.5"
+metadata marginRatio.max is "1"
+metadata marginRatio.default is "1"
+metadata marginRatio.label is "Margin ratio"
+metadata marginRatio.section is "Text"
+
 
 -- PRIVATE INSTANCE VARIABLES
 private variable mIsToggle	as Boolean
@@ -607,6 +661,10 @@ private variable mTextIconBottom as Integer
 private variable mHighlightedTextIconBottom as Integer
 
 private variable mIconGravity as String
+
+private variable mTextAlign as String
+private variable mMarginRatio as Number
+private variable mHorizontalIconMargin as Number
 
 
 
@@ -650,6 +708,7 @@ public handler OnCreate()
 	put true into mShowHighlightedBackground
 	put true into mExecuteWidgetMouseHandlers
 	put 1.0 into mIconSizeRatio
+	put 0 into mHorizontalIconMargin
 
 	setLabelIcon("star")
 	setHighlightedLabelIcon("apple")
@@ -692,6 +751,9 @@ public handler OnSave(out rProperties as Array)
 	put mTextHeightHighlighted into rProperties["text height highlighted"]
 	put mTextIconBottom into rProperties["text icon bottom"]
 	put mHighlightedTextIconBottom into rProperties["highlighted text icon bottom"]
+	put mTextAlign into rProperties["text align"]
+	put mMarginRatio into rProperties["margin ratio"]
+  put mHorizontalIconMargin into rProperties["horizontal icon margin"]
 end handler
 
 
@@ -740,6 +802,24 @@ public handler OnLoad(in pProperties as Array)
 	if "highlighted text icon bottom" is among the keys of pProperties then
 		put pProperties["highlighted text icon bottom"] into mHighlightedTextIconBottom
 	end if
+
+	if "text align" is among the keys of pProperties then
+		put pProperties["text align"] into mTextAlign
+	else
+		put "center" into mTextAlign
+	end if
+
+	if "margin ratio" is among the keys of pProperties then
+		put pProperties["margin ratio"] into mMarginRatio
+	else
+		put 1.0 into mMarginRatio
+	end if
+
+  if "horizontal icon margin" is among the keys of pProperties then
+    put pProperties["horizontal icon margin"] into mHorizontalIconMargin
+	else
+		put 0 into mHorizontalIconMargin
+  end if
 
 	if "highlightedLabelColor" is among the keys of pProperties then
 		setHighlightedLabelColor(pProperties["highlightedLabelColor"])
@@ -901,7 +981,16 @@ private handler fillTextInRect(in pWhichText as String)
 	put 1 into tRow
 	repeat for each element tText in tLinesofText
 		set the height of tTextBox to tTextHeight
-		fill text tText at center of tTextBox on this canvas
+		-- fill text tText at center of tTextBox on this canvas
+		---------------------------------------
+		if mTextAlign is "left" then
+			fill text tText at left of tTextBox on this canvas
+		else if mTextAlign is "right" then
+			fill text tText at right of tTextBox on this canvas
+		else
+			fill text tText at center of tTextBox on this canvas
+		end if
+		-----------------------------------
 		add 1 to tRow
 		add tTextHeight to the top of tTextBox
 	end repeat
@@ -1113,13 +1202,18 @@ end handler
 private handler fetchTextBox() returns Rectangle
 	variable tRect as Rectangle
 	variable tLeft as Integer
-	put (my width / 8) + (mBorderWidth / 2) into tLeft
+	-- put (my width / 8) + (mBorderWidth / 2) into tLeft
+	-- put mBorderWidth into tLeft
+	put ((my width / 2) - ((my width / 2) * mMarginRatio)) into mHorizontalIconMargin
+	put mBorderWidth + ((my width / 2) - ((my width / 2) * mMarginRatio)) into tLeft
 
 	variable tTop as Integer
 	put 0 into tTop
 
 	variable tRight as Integer
-	put (7 * my width / 8) - (mBorderWidth / 2) into tRight
+	-- put (7 * my width / 8) - (mBorderWidth / 2) into tRight
+	put (my width - ((my width / 2) - ((my width / 2) * mMarginRatio))) - \
+	mBorderWidth into tRight
 
 	variable tBottom as Integer
 
@@ -1341,12 +1435,19 @@ private handler iconLeft() returns Integer
 		if (mIconGravity is kIconGravityRight) then
 			put my width / 2 into tLeft
 
+			-- if my width > my height then
+			-- 	put (my width - (my height / kIconSpacingRatio)) - \
+			-- 	mBorderWidth into tRight
+			-- else
+			-- 	put (my width - (my width / kIconSpacingRatio)) - \
+			-- 	mBorderWidth into tRight
+			-- end if
 			if my width > my height then
-				put (my width - (my height / kIconSpacingRatio)) - \
-				mBorderWidth into tRight
+				put ((my width - (my height / kIconSpacingRatio)) - \
+				mBorderWidth) - mHorizontalIconMargin into tRight
 			else
-				put (my width - (my width / kIconSpacingRatio)) - \
-				mBorderWidth into tRight
+				put ((my width - (my width / kIconSpacingRatio)) - \
+				mBorderWidth) - mHorizontalIconMargin into tRight
 			end if
 
 			put tRight - tLeft into tParentHalfWidthDelta
@@ -1360,10 +1461,20 @@ private handler iconLeft() returns Integer
 			(mIconGravity is kIconGravityTop) or \
 			(mIconGravity is kIconGravityBottom) then
 
-			if my width > my height then
-				put (my height / kIconSpacingRatio) + mBorderWidth into tLeft
+			if (mIconGravity is kIconGravityLeft) then
+				if my width > my height then
+					put ((my height / kIconSpacingRatio) + mBorderWidth) + \
+					mHorizontalIconMargin into tLeft
+				else
+					put ((my width / kIconSpacingRatio) + mBorderWidth) + \
+					mHorizontalIconMargin into tLeft
+				end if
 			else
-				put (my width / kIconSpacingRatio) + mBorderWidth into tLeft
+				if my width > my height then
+					put (my height / kIconSpacingRatio) + mBorderWidth into tLeft
+				else
+					put (my width / kIconSpacingRatio) + mBorderWidth into tLeft
+				end if
 			end if
 		end if
 
@@ -1492,12 +1603,22 @@ private handler iconRight() returns Integer
 			(mIconGravity is kIconGravityTop) or \
 			(mIconGravity is kIconGravityBottom) then
 
-			if my width > my height then
-				put (my width - (my height / kIconSpacingRatio)) - \
-				mBorderWidth into tRight
+			if (mIconGravity is kIconGravityRight) then
+				if my width > my height then
+					put ((my width - (my height / kIconSpacingRatio)) - \
+					mBorderWidth) - mHorizontalIconMargin into tRight
+				else
+					put ((my width - (my width / kIconSpacingRatio)) - \
+					(mBorderWidth / 2)) - mHorizontalIconMargin into tRight
+				end if
 			else
-				put (my width - (my width / kIconSpacingRatio)) - \
-				(mBorderWidth / 2) into tRight
+				if my width > my height then
+					put (my width - (my height / kIconSpacingRatio)) - \
+					mBorderWidth into tRight
+				else
+					put (my width - (my width / kIconSpacingRatio)) - \
+					(mBorderWidth / 2) into tRight
+				end if
 			end if
 		end if
 
@@ -1519,7 +1640,8 @@ private handler iconRight() returns Integer
 		end if
 
 		if (mIconGravity is kIconGravityLeft) then
-			put (my width / kIconSpacingRatio) + (mBorderWidth / 2) into tLeft
+			put ((my width / kIconSpacingRatio) + (mBorderWidth / 2)) + \
+			mHorizontalIconMargin into tLeft
 			-- USE A SQUARE ?
 			-- if my width > my height then
 			-- 	put (my height / 2) - tLeft into tParentHalfWidthDelta
@@ -1733,12 +1855,43 @@ private handler setIconGravity(in pGravity as String)
 			kIconGravityBottomRight] into tGravityList
 
 	if not(pGravity is in tGravityList) then
-		throw "invalid gravity type"
+		throw "invalid gravity type" && pGravity
 	end if
 
 	put pGravity into mIconGravity
 
 	redraw all
+end handler
+
+
+public handler SetHorizontalTextAlign(in pAlign as String)
+	variable tAlignmentList as List
+	put ["left", "center", "right"] into tAlignmentList
+
+   if (not pAlign is in tAlignmentList) then
+      throw "invalid alignment" && pAlign
+   end if
+
+   put pAlign into mTextAlign
+
+	redraw all
+end handler
+
+
+public handler GetHorizontalTextAlign() returns String
+   return mTextAlign
+end handler
+
+
+private handler setMarginRatio(in pRatio as Number)
+	if pRatio < 0.1 or pRatio > 1 then
+		throw "invalid ratio"
+	end if
+
+	if pRatio is not mMarginRatio then
+		put pRatio into mMarginRatio
+		redraw all
+	end if
 end handler
 
 
