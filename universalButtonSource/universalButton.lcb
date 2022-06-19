@@ -68,7 +68,7 @@ widget community.livecode.rabit.universalbutton
 use com.livecode.canvas
 use com.livecode.widget
 use com.livecode.engine
-use com.livecode.library.iconSVG
+use com.livecode.library.iconsvg
 use com.livecode.library.widgetutils
 use com.livecode.math
 use com.livecode.char
