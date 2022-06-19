@@ -27,7 +27,7 @@ control by using grouped button widgets.
 
 Note: Before opening the demo stack you should install
 the LCB universal button extension
-(community.livecode.rabit.universalbutton.1.2.0.lce)
+(community.livecode.rabit.universalbutton.1.2.1.lce)
 which is located in the "universalButtonSource" folder
 of the "universal-button-widget" package.
 Then open the stack and follow the instructions contained
@@ -40,7 +40,7 @@ For the license terms see the LICENSE file.
 
 ### Meta
 
-Version: 1.2.0  
+Version: 1.2.1  
 Web Site: <https://revigniter.com/>
 
 Author:  Ralf Bitter
