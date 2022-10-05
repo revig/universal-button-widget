@@ -11,8 +11,8 @@ import module community.livecode.rabit.universalbutton
   use com.livecode.string
   use com.livecode.type
   use com.livecode.widget
-  use com.livecode.char
   use com.livecode.typeconvert
+  use com.livecode.char
   use com.livecode.mathfoundation
   use com.livecode.engine
   handler OnCreate() returns optional any

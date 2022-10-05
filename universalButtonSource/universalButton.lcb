@@ -78,7 +78,7 @@ use com.livecode.char
 -- METADATA
 metadata title is "Universal Button"
 metadata author is "Ralf Bitter"
-metadata version is "1.2.1"
+metadata version is "1.3.0"
 metadata svgicon is "M 209.72266 351.86719 C 179.16544 351.86719 154.56641 376.46622 154.56641 407.02344 L 154.56641 495.66992 C 154.56641 526.22714 179.16544 550.82813 209.72266 550.82812 L 498.36914 550.82812 C 528.92636 550.82812 553.52539 526.22714 553.52539 495.66992 L 553.52539 407.02344 C 553.52539 376.46622 528.92636 351.86719 498.36914 351.86719 L 209.72266 351.86719 z M 353.23242 380.30664 L 376.95898 426.59766 L 428.54297 433.29492 L 391.84961 470.16406 L 401.41992 521.29297 L 355.01562 497.78906 L 309.34766 522.69141 L 317.36133 471.29492 L 279.56445 435.55664 L 330.92188 427.29688 L 353.23242 380.30664 z"
 metadata preferredSize is "128,36"
 
@@ -626,6 +626,25 @@ metadata marginRatio.label is "Margin ratio"
 metadata marginRatio.section is "Text"
 
 
+/**
+Syntax:
+get the ubFormattedWidth of <widget>
+
+Summary: Get the width of the button label or icon or both.
+
+Example: set the width of widget 1 to (the ubFormattedWidth of widget 1)
+
+Description:
+Use the <ubFormattedWidth> property to trim the width of the widget
+to the width of the label or the icon or both in case the icon type
+is "icon and text". The calculation respects the settings of the
+icon size ratio and the margin ratio. The width of the label text is
+calculated by checking both, the button text and the button toggle text.
+
+*/
+property "ubFormattedWidth"		get mFormattedWidth
+
+
 -- PRIVATE INSTANCE VARIABLES
 private variable mIsToggle	as Boolean
 private variable mLabelStyle as String
@@ -665,6 +684,11 @@ private variable mIconGravity as String
 private variable mTextAlign as String
 private variable mMarginRatio as Number
 private variable mHorizontalIconMargin as Number
+
+private variable mTextCanvasWidth as Number
+private variable mIconBounds as Rectangle
+private variable mIconWidth as Number
+private variable mFormattedWidth as Number
 
 
 
@@ -916,6 +940,8 @@ private handler drawButton() returns nothing
 			fill fetchIconPath(mLabelIconPath) on this canvas
 		end if
 	end if
+
+	calculateFormattedWidth()
 end handler
 
 
@@ -933,7 +959,37 @@ private handler fillTextInRect(in pWhichText as String)
 	variable tRawText as String
 	variable tTextBox as Rectangle
 
+  variable tRawTextLines as String
+	variable tRawTextLine as String
+	variable tRawTextLinesList as List
+	variable tRawTextBounds as Rectangle
+	variable tRawTextCanvasWidth as Number
+
 	put pWhichText into tRawText
+
+  put mText into tRawTextLines
+  	split tRawTextLines by newline into tRawTextLinesList
+
+  	repeat for each element tRawTextLine in tRawTextLinesList
+  		put the bounds of text tRawTextLine on this canvas into tRawTextBounds
+  		if the width of tRawTextBounds > tRawTextCanvasWidth then
+  			put the width of tRawTextBounds into tRawTextCanvasWidth
+  		end if
+  	end repeat
+
+
+  	put mToggleText into tRawTextLines
+  	split tRawTextLines by newline into tRawTextLinesList
+
+  	repeat for each element tRawTextLine in tRawTextLinesList
+  		put the bounds of text tRawTextLine on this canvas into tRawTextBounds
+  		if the width of tRawTextBounds > tRawTextCanvasWidth then
+  			put the width of tRawTextBounds into tRawTextCanvasWidth
+  		end if
+  	end repeat
+
+  	put tRawTextCanvasWidth into mTextCanvasWidth
+
 	put fetchTextBox() into tTextBox
 
 	replace newline with " xyz " in tRawText -- needs com.livecode.char library
@@ -1366,12 +1422,17 @@ end handler
 
 private handler fetchIconPath(in pLabelIconPath as String) returns Path
 	variable tIconPath as Path
+  variable tIconBounds as Rectangle
+
 	put path pLabelIconPath into tIconPath
 
 	variable tIconRect as Rectangle
 	put theIconRect() into tIconRect
 
 	constrainPathToRect(tIconRect, tIconPath)
+
+	put the bounding box of tIconPath into tIconBounds
+	put the width of tIconBounds into mIconWidth
 
 	return tIconPath
 end handler
@@ -1892,6 +1953,48 @@ private handler setMarginRatio(in pRatio as Number)
 		put pRatio into mMarginRatio
 		redraw all
 	end if
+end handler
+
+
+private handler calculateFormattedWidth() returns nothing
+	variable tTextBoxWidthQuarter as Number
+	variable tFormattedWidth as Number
+
+	if mLabelStyle is kLabelStyleText then
+		put the ceiling of (mTextCanvasWidth + (mBorderWidth * 2)) into mFormattedWidth
+
+	else if mLabelStyle is kLabelStyleIcon then
+		put the ceiling of (mIconWidth + (mBorderWidth * 2)) into mFormattedWidth
+
+	else if mLabelStyle is kLabelStyleIconText then
+		if (mIconGravity is "left") or (mIconGravity is "right") then
+
+			if mTextAlign is not "center" then
+				-- CALCULATE ONE QUARTER OF THE TEXT BOX WIDTH
+				put (mTextCanvasWidth + (mIconWidth / 2)) / 3 into tTextBoxWidthQuarter
+
+				put ((tTextBoxWidthQuarter * 3) + (tTextBoxWidthQuarter * mIconSizeRatio)) + (mBorderWidth * 2) into tFormattedWidth
+
+			else -- if mTextAlign is not "center"
+				-- CALCULATE ONE QUARTER OF THE TEXT BOX WIDTH
+				put (mTextCanvasWidth / 2) + (mIconWidth / 2) into tTextBoxWidthQuarter
+
+				put ((tTextBoxWidthQuarter * 2) + ((tTextBoxWidthQuarter * 2) * mIconSizeRatio)) + (mBorderWidth * 2) into tFormattedWidth
+			end if -- if mTextAlign is not "center"
+
+			-- DON'T ASK :)
+			put tFormattedWidth + 8 into tFormattedWidth
+
+			put tFormattedWidth / mMarginRatio into tFormattedWidth
+
+			put the ceiling of tFormattedWidth into mFormattedWidth
+
+
+		else -- if (mIconGravity is "left") or (mIconGravity is "right")
+			put the ceiling of (mTextCanvasWidth + (mBorderWidth * 2)) into mFormattedWidth
+
+		end if -- if (mIconGravity is "left") or (mIconGravity is "right")
+	end if -- if mLabelStyle is kLabelStyleText
 end handler
 
 
