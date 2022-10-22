@@ -969,27 +969,28 @@ private handler fillTextInRect(in pWhichText as String)
 	put pWhichText into tRawText
 
   put mText into tRawTextLines
-  	split tRawTextLines by newline into tRawTextLinesList
+  split tRawTextLines by newline into tRawTextLinesList
 
-  	repeat for each element tRawTextLine in tRawTextLinesList
-  		put the bounds of text tRawTextLine on this canvas into tRawTextBounds
-  		if the width of tRawTextBounds > tRawTextCanvasWidth then
-  			put the width of tRawTextBounds into tRawTextCanvasWidth
-  		end if
-  	end repeat
+  repeat for each element tRawTextLine in tRawTextLinesList
+  	put the bounds of text tRawTextLine on this canvas into tRawTextBounds
+  	if the width of tRawTextBounds > tRawTextCanvasWidth then
+  		put the width of tRawTextBounds into tRawTextCanvasWidth
+  	end if
+  end repeat
 
+  if mIsToggle then
+    put mToggleText into tRawTextLines
+    split tRawTextLines by newline into tRawTextLinesList
 
-  	put mToggleText into tRawTextLines
-  	split tRawTextLines by newline into tRawTextLinesList
+    repeat for each element tRawTextLine in tRawTextLinesList
+  	  put the bounds of text tRawTextLine on this canvas into tRawTextBounds
+  	  if the width of tRawTextBounds > tRawTextCanvasWidth then
+  		  put the width of tRawTextBounds into tRawTextCanvasWidth
+  	  end if
+    end repeat
+  end if
 
-  	repeat for each element tRawTextLine in tRawTextLinesList
-  		put the bounds of text tRawTextLine on this canvas into tRawTextBounds
-  		if the width of tRawTextBounds > tRawTextCanvasWidth then
-  			put the width of tRawTextBounds into tRawTextCanvasWidth
-  		end if
-  	end repeat
-
-  	put tRawTextCanvasWidth into mTextCanvasWidth
+  put tRawTextCanvasWidth into mTextCanvasWidth
 
 	put fetchTextBox() into tTextBox
 
