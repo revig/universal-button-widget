@@ -23,6 +23,7 @@ import module community.livecode.rabit.universalbutton
   handler setHighlightedLabelIconPath(in pIconName as String) returns nothing
   handler SetHorizontalTextAlign(in pWhichText as String) returns optional any
   handler GetHorizontalTextAlign() returns String
+  handler OnGeometryChanged() returns nothing
   handler OnMouseDown() returns nothing
   handler OnMouseUp() returns nothing
   handler OnMouseCancel() returns nothing

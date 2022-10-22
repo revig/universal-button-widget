@@ -60,6 +60,16 @@ Example: set the foregroundColor of widget "Universal Button" to "211,211,211"
 Description:
 Use the <foregroundColor> property to control the color of the button label
 (icon and text) when not hilited.
+
+Name: ubGeometryChanged
+Type: message
+Syntax: ubGeometryChanged
+
+Summary: Sent when the widget geometry changed.
+
+Description:
+The ubGeometryChanged message is sent to the widget's script object
+when the widget geometry changed.
 */
 widget community.livecode.rabit.universalbutton
 --
@@ -1997,6 +2007,15 @@ private handler calculateFormattedWidth() returns nothing
 
 		end if -- if (mIconGravity is "left") or (mIconGravity is "right")
 	end if -- if mLabelStyle is kLabelStyleText
+end handler
+
+
+public handler OnGeometryChanged() returns nothing
+	-- ON CREATION mFormattedWidth IS 0. AT THIS TIME
+	-- THERE IS NO NEED TO POST TO THE WIDGET'S SCRIPT
+	if mFormattedWidth is not 0 then
+		post "ubGeometryChanged"
+	end if
 end handler
 
 
