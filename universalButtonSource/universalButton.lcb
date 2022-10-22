@@ -643,6 +643,7 @@ calculated by checking both, the button text and the button toggle text.
 
 */
 property "ubFormattedWidth"		get mFormattedWidth
+metadata ubFormattedWidth.label is "Formatted Width"
 
 
 -- PRIVATE INSTANCE VARIABLES
