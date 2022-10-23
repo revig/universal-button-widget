@@ -17,11 +17,11 @@ on ubResizeToFormattedWidth pDeviation
       put empty into pDeviation
    end if
 
-	 if pDeviation is not an integer then
-		 put the round of pDeviation into pDeviation
-	 end if
+   if pDeviation is not an integer then
+     put the round of pDeviation into pDeviation
+   end if
 
-	 -- THIS VALUE MAY NEED TO BE SET HIGHER
+   -- THIS VALUE MAY NEED TO BE SET HIGHER
    wait 300 millisecs with messages
 
    put the buttonText of me into tBtnText

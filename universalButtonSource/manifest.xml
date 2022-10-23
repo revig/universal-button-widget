@@ -2,7 +2,7 @@
   <name>community.livecode.rabit.universalbutton</name>
   <title>Universal Button</title>
   <author>Ralf Bitter</author>
-  <version>1.3.0</version>
+  <version>1.3.1</version>
   <license>community</license>
   <type>widget</type>
   <requires name="com.livecode.canvas"/>
@@ -136,6 +136,7 @@
   <metadata key="marginRatio.label">Margin ratio</metadata>
   <metadata key="marginRatio.section">Text</metadata>
   <property name="ubFormattedWidth" get="number"/>
+  <metadata key="ubFormattedWidth.label">Formatted Width</metadata>
   <handler name="OnCreate" parameters="" return="any"/>
   <handler name="OnSave" parameters="out array" return="any"/>
   <handler name="OnLoad" parameters="in array" return="any"/>
@@ -144,6 +145,7 @@
   <handler name="setHighlightedLabelIconPath" parameters="in string" return="nothing"/>
   <handler name="SetHorizontalTextAlign" parameters="in string" return="any"/>
   <handler name="GetHorizontalTextAlign" parameters="" return="string"/>
+  <handler name="OnGeometryChanged" parameters="" return="nothing"/>
   <handler name="OnMouseDown" parameters="" return="nothing"/>
   <handler name="OnMouseUp" parameters="" return="nothing"/>
   <handler name="OnMouseCancel" parameters="" return="nothing"/>

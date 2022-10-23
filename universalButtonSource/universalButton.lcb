@@ -106,8 +106,8 @@ end ubSwitchLabel
 Description:
 Use the ubResizeToFormattedWidth handler to adjust the width
 of the button right after changing the button label.
-Add the ubResizeToFormattedWidth default handler to the widget
-and call it in your script.
+Add the ubResizeToFormattedWidth default handler to the widget's
+script object and call it in your script.
 pDeviation is an integer to increase or decrease the formatted
 width of the button.
 */
@@ -128,7 +128,7 @@ use com.livecode.char
 -- METADATA
 metadata title is "Universal Button"
 metadata author is "Ralf Bitter"
-metadata version is "1.3.0"
+metadata version is "1.3.1"
 metadata svgicon is "M 209.72266 351.86719 C 179.16544 351.86719 154.56641 376.46622 154.56641 407.02344 L 154.56641 495.66992 C 154.56641 526.22714 179.16544 550.82813 209.72266 550.82812 L 498.36914 550.82812 C 528.92636 550.82812 553.52539 526.22714 553.52539 495.66992 L 553.52539 407.02344 C 553.52539 376.46622 528.92636 351.86719 498.36914 351.86719 L 209.72266 351.86719 z M 353.23242 380.30664 L 376.95898 426.59766 L 428.54297 433.29492 L 391.84961 470.16406 L 401.41992 521.29297 L 355.01562 497.78906 L 309.34766 522.69141 L 317.36133 471.29492 L 279.56445 435.55664 L 330.92188 427.29688 L 353.23242 380.30664 z"
 metadata preferredSize is "128,36"
 

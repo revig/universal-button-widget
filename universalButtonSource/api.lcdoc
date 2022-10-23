@@ -11,7 +11,7 @@ both. Every corner can be rounded separately.
 
 author: Ralf Bitter
 
-version: 1.3.0
+version: 1.3.1
 
 Name: borderColor
 
@@ -74,6 +74,61 @@ Example: set the foregroundColor of widget "Universal Button" to "211,211,211"
 Description:
 Use the <foregroundColor> property to control the color of the button label
 (icon and text) when not hilited.
+
+Name: ubGeometryChanged
+
+Type: message
+
+Syntax: ubGeometryChanged
+
+Summary: Sent when the widget geometry changed.
+
+Description:
+The ubGeometryChanged message is sent to the widget's script object
+when the widget geometry changed.
+
+Name: ubResizeToFormattedWidth
+
+Type: LC handler
+
+Syntax: ubResizeToFormattedWidth <pDeviation>
+
+Summary:
+The ubResizeToFormattedWidth handler is used
+to adjust the width of the button to the formatted width.
+
+Example:
+command ubSwitchLabel
+   local tTopRight, tLabel
+
+   put the topRight of  widget 1  into tTopRight
+   put the buttonText of widget 1 into tLabel
+
+   set the iconSizeRatio of widget 1 to 0.55
+
+   if tLabel = "next card" then
+      set the buttonText of widget 1 to "up"
+   else
+      set the buttonText of widget 1 to "next card"
+   end if
+
+   dispatch "ubResizeToFormattedWidth" to widget 1
+   set the topRight of widget 1 to tTopRight
+
+   if the buttonText of widget 1 = "next card" then
+      set the iconSizeRatio of widget 1 to 0.55
+   else
+      set the iconSizeRatio of widget 1 to 1
+   end if
+end ubSwitchLabel
+
+Description:
+Use the ubResizeToFormattedWidth handler to adjust the width
+of the button right after changing the button label.
+Add the ubResizeToFormattedWidth default handler to the widget's
+script object and call it in your script.
+pDeviation is an integer to increase or decrease the formatted
+width of the button.
 
 Name: labelIcon
 
