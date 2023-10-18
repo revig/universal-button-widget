@@ -128,7 +128,7 @@ use com.livecode.char
 -- METADATA
 metadata title is "Universal Button"
 metadata author is "Ralf Bitter"
-metadata version is "1.3.1"
+metadata version is "1.4.0"
 metadata svgicon is "M 209.72266 351.86719 C 179.16544 351.86719 154.56641 376.46622 154.56641 407.02344 L 154.56641 495.66992 C 154.56641 526.22714 179.16544 550.82813 209.72266 550.82812 L 498.36914 550.82812 C 528.92636 550.82812 553.52539 526.22714 553.52539 495.66992 L 553.52539 407.02344 C 553.52539 376.46622 528.92636 351.86719 498.36914 351.86719 L 209.72266 351.86719 z M 353.23242 380.30664 L 376.95898 426.59766 L 428.54297 433.29492 L 391.84961 470.16406 L 401.41992 521.29297 L 355.01562 497.78906 L 309.34766 522.69141 L 317.36133 471.29492 L 279.56445 435.55664 L 330.92188 427.29688 L 353.23242 380.30664 z"
 metadata preferredSize is "128,36"
 
@@ -741,6 +741,9 @@ private variable mIconBounds as Rectangle
 private variable mIconWidth as Number
 private variable mFormattedWidth as Number
 
+private variable mIsPressed as Boolean
+private variable mPostMouseUp as Boolean
+
 
 
 -- CONSTANTS
@@ -758,6 +761,7 @@ constant kIconGravityTopRight is "topRight"
 constant kIconGravityBottomLeft is "bottomLeft"
 constant kIconGravityBottomRight is "bottomRight"
 constant kIconSpacingRatio is 22
+constant kDisabledOpacity is 0.5
 
 
 
@@ -784,6 +788,9 @@ public handler OnCreate()
 	put true into mExecuteWidgetMouseHandlers
 	put 1.0 into mIconSizeRatio
 	put 0 into mHorizontalIconMargin
+
+  put false into mIsPressed
+  put false into mPostMouseUp
 
 	setLabelIcon("star")
 	setHighlightedLabelIcon("apple")
@@ -921,9 +928,17 @@ end handler
 
 
 public handler OnPaint()
+  variable tBaseOpacity as Number
+
+  if my disabled then
+    put kDisabledOpacity into tBaseOpacity
+	else
+		put 1 into tBaseOpacity
+	end if
+
 	updatePerimeter()
 
-	drawButton()
+	drawButton(tBaseOpacity)
 
 	-- DRAW THE PERIMETER OF THE BUTTON
 	if mShowBtnBorder then
@@ -934,7 +949,12 @@ public handler OnPaint()
 end handler
 
 
-private handler drawButton() returns nothing
+private handler drawButton(in pBaseOpacity as Number) returns nothing
+  variable tTextPaint as Paint
+  variable tTextColor as Color
+
+  set the opacity of this canvas to the opacity of this canvas * pBaseOpacity
+
 	if mIsHighlighted then
 		if mShowHighlightedBackground then
 			set the paint of this canvas to my highlight paint
@@ -952,13 +972,18 @@ private handler drawButton() returns nothing
 	-- FILL IN THE TEXT
 	if mIsHighlighted then
 		if mhighlightedLabelColor is nothing then
-			set the paint of this canvas to fetchPaint("highlighted label")
+			put fetchPaint("highlighted label") into tTextPaint
 		else
-			set the paint of this canvas to solid paint with mHighlightedLabelColor
+			put solid paint with mHighlightedLabelColor into tTextPaint
 		end if
 	else
-		set the paint of this canvas to my foreground paint
+		put solid paint with the color of my foreground paint into tTextPaint
 	end if
+
+  put the color of tTextPaint into tTextColor
+  set the alpha of tTextColor to pBaseOpacity
+  set the color of tTextPaint to tTextColor
+  set the paint of this canvas to tTextPaint
 
 	-- LABEL
 	-- set the font of this canvas to font "Helvetica" at size 12
@@ -2060,6 +2085,9 @@ end handler
 
 
 public handler OnMouseDown() returns nothing
+  put true into mIsPressed
+  put true into mPostMouseUp
+
 	if mExecuteWidgetMouseHandlers is true then
 		if mIsToggle is false then
 			put true into mIsHighlighted
@@ -2088,7 +2116,12 @@ public handler OnMouseUp() returns nothing
 		end if
 	end if
 
-	post "mouseUp" to my script object with [intToString(the click button)]
+  put false into mIsPressed
+
+  if mPostMouseUp is true then
+    put false into mPostMouseUp
+    post "mouseUp" to my script object with [intToString(the click button)]
+  end if
 end handler
 
 
@@ -2108,6 +2141,9 @@ public handler OnMouseCancel() returns nothing
 		end if
 	end if
 
+  put false into mIsPressed
+  put false into mPostMouseUp
+
 	post "mouseCancel" to my script object
 end handler
 
@@ -2119,6 +2155,10 @@ public handler onMouseEnter() returns nothing
 	-- 	redraw all
 	-- end if
 
+  if mIsPressed is true then
+    put true into mPostMouseUp
+  end if
+
 	post "mouseEnter" to my script object
 end handler
 
@@ -2128,6 +2168,10 @@ public handler onMouseLeave() returns nothing
 	-- 	put false into mIsHighlighted
 	-- 	redraw all
 	-- end if
+
+  if mIsPressed is true then
+    put false into mPostMouseUp
+  end if
 
 	post "mouseLeave" to my script object
 end handler
