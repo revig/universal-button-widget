@@ -761,6 +761,7 @@ constant kIconGravityTopRight is "topRight"
 constant kIconGravityBottomLeft is "bottomLeft"
 constant kIconGravityBottomRight is "bottomRight"
 constant kIconSpacingRatio is 22
+constant kDisabledOpacity is 0.5
 
 
 
@@ -927,9 +928,17 @@ end handler
 
 
 public handler OnPaint()
+  variable tBaseOpacity as Number
+
+  if my disabled then
+    put kDisabledOpacity into tBaseOpacity
+	else
+		put 1 into tBaseOpacity
+	end if
+
 	updatePerimeter()
 
-	drawButton()
+	drawButton(tBaseOpacity)
 
 	-- DRAW THE PERIMETER OF THE BUTTON
 	if mShowBtnBorder then
@@ -940,7 +949,12 @@ public handler OnPaint()
 end handler
 
 
-private handler drawButton() returns nothing
+private handler drawButton(in pBaseOpacity as Number) returns nothing
+  variable tTextPaint as Paint
+  variable tTextColor as Color
+
+  set the opacity of this canvas to the opacity of this canvas * pBaseOpacity
+
 	if mIsHighlighted then
 		if mShowHighlightedBackground then
 			set the paint of this canvas to my highlight paint
@@ -958,13 +972,18 @@ private handler drawButton() returns nothing
 	-- FILL IN THE TEXT
 	if mIsHighlighted then
 		if mhighlightedLabelColor is nothing then
-			set the paint of this canvas to fetchPaint("highlighted label")
+			put fetchPaint("highlighted label") into tTextPaint
 		else
-			set the paint of this canvas to solid paint with mHighlightedLabelColor
+			put solid paint with mHighlightedLabelColor into tTextPaint
 		end if
 	else
-		set the paint of this canvas to my foreground paint
+		put solid paint with the color of my foreground paint into tTextPaint
 	end if
+
+  put the color of tTextPaint into tTextColor
+  set the alpha of tTextColor to pBaseOpacity
+  set the color of tTextPaint to tTextColor
+  set the paint of this canvas to tTextPaint
 
 	-- LABEL
 	-- set the font of this canvas to font "Helvetica" at size 12
