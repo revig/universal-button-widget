@@ -741,6 +741,9 @@ private variable mIconBounds as Rectangle
 private variable mIconWidth as Number
 private variable mFormattedWidth as Number
 
+private variable mIsPressed as Boolean
+private variable mPostMouseUp as Boolean
+
 
 
 -- CONSTANTS
@@ -784,6 +787,9 @@ public handler OnCreate()
 	put true into mExecuteWidgetMouseHandlers
 	put 1.0 into mIconSizeRatio
 	put 0 into mHorizontalIconMargin
+
+  put false into mIsPressed
+  put false into mPostMouseUp
 
 	setLabelIcon("star")
 	setHighlightedLabelIcon("apple")
@@ -2060,6 +2066,9 @@ end handler
 
 
 public handler OnMouseDown() returns nothing
+  put true into mIsPressed
+  put true into mPostMouseUp
+
 	if mExecuteWidgetMouseHandlers is true then
 		if mIsToggle is false then
 			put true into mIsHighlighted
@@ -2088,7 +2097,12 @@ public handler OnMouseUp() returns nothing
 		end if
 	end if
 
-	post "mouseUp" to my script object with [intToString(the click button)]
+  put false into mIsPressed
+
+  if mPostMouseUp is true then
+    put false into mPostMouseUp
+    post "mouseUp" to my script object with [intToString(the click button)]
+  end if
 end handler
 
 
@@ -2108,6 +2122,9 @@ public handler OnMouseCancel() returns nothing
 		end if
 	end if
 
+  put false into mIsPressed
+  put false into mPostMouseUp
+
 	post "mouseCancel" to my script object
 end handler
 
@@ -2119,6 +2136,10 @@ public handler onMouseEnter() returns nothing
 	-- 	redraw all
 	-- end if
 
+  if mIsPressed is true then
+    put true into mPostMouseUp
+  end if
+
 	post "mouseEnter" to my script object
 end handler
 
@@ -2128,6 +2149,10 @@ public handler onMouseLeave() returns nothing
 	-- 	put false into mIsHighlighted
 	-- 	redraw all
 	-- end if
+
+  if mIsPressed is true then
+    put false into mPostMouseUp
+  end if
 
 	post "mouseLeave" to my script object
 end handler
